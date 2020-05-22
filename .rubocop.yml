@@ -1,0 +1,45 @@
+inherit_from: .rubocop_todo.yml
+
+require:
+  - rubocop-rails
+  - rubocop-rspec
+
+AllCops:
+  TargetRubyVersion: 2.3
+  Exclude:
+    - 'node_modules/**/*'
+    - 'db/**/*'
+    - 'tmp/**/*'
+    - 'lib/generators/copy_table_migration/templates/migration.rb'
+
+Metrics:
+  Enabled: false
+
+Style/BlockDelimiters:
+  Exclude:
+    - 'spec/models/story_spec.rb'
+
+# Configuration parameters: EnforcedStyle.
+# SupportedStyles: both, prefix, postfix
+Style/NegatedIf:
+  EnforcedStyle: postfix
+
+# Configuration parameters: EnforcedStyle, ConsistentQuotesInMultiline.
+# SupportedStyles: single_quotes, double_quotes
+Style/StringLiterals:
+  Exclude:
+    - config/deploy.rb
+    - config/deploy/*.rb
+
+Lint/InheritException:
+  EnforcedStyle: 'standard_error'
+
+# 'each' is more appropriate than 'find_each' most of the time, so it's
+# better to disable the cop
+# Link: https://apidock.com/rails/ActiveRecord/Batches/find_each
+Rails/FindEach:
+  Enabled: false
+
+Style/RedundantSort:
+  Exclude:
+    - 'lib/scratch/parser.rb'
