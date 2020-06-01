@@ -219,7 +219,7 @@ def table_print
 end
 
 def user_included?(user)
-  options[:users].include?(user) || options[:user] == user
+  options[:users]&.include?(user) || options[:user] == user
 end
 
 def largest_author_name_size
