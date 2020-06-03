@@ -5,6 +5,7 @@ require 'optparse'
 require_relative '../lib/config'
 require_relative '../lib/pr'
 require_relative '../lib/services/github_client.rb'
+require_relative '../lib/pr_user_collection'
 
 def main
   if options[:config] || !config.initialized?
@@ -200,24 +201,39 @@ def table_print
 
   output.push('-' * output.first.size)
 
-  user_pr_counts.each do |user, counts|
-    if(user_included?(user))
-      authored = counts[:author]
-      reviewing = counts[:active_reviewer]
-      total = authored + reviewing
+  pr_users = PrUserCollection.pr_users(
+    user_pr_counts: user_pr_counts,
+    options: options,
+    actionables_per_author: actionables_per_author,
+    untouched_per_author: untouched_per_author
+  )
 
-      output.push(
-        [
-          user + add_user_space(user, counts[:author]),
-          authored.to_s + add_authored_space(counts[:active_reviewer]),
-          reviewing.to_s.ljust('Total | '.size),
-          total.to_s.ljust('Actionable PRs | '.size),
-          actionables_per_author[user].to_s.ljust('Untouched PRs | '.size),
-          untouched_per_author[user].to_s
-        ].join
-      )
+  pr_users.
+    sort do |a, b|
+      [
+        a.total_count,
+        a.actionable_count,
+        a.untouched_count
+      ] <=> [
+        b.total_count,
+        b.actionable_count,
+        b.untouched_count
+      ]
+    end.
+    each do |user|
+      if(user_included?(user.username))
+        output.push(
+          [
+            user.username + add_user_space(user.username, user.authored_count),
+            user.authored_count.to_s + add_authored_space(user.reviewing_count),
+            user.reviewing_count.to_s.ljust('Total | '.size),
+            user.total_count.to_s.ljust('Actionable PRs | '.size),
+            user.actionable_count.to_s.ljust('Untouched PRs | '.size),
+            user.untouched_count.to_s
+          ].join
+        )
+      end
     end
-  end
 
   puts output.join("\n")
 
