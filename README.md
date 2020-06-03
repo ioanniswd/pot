@@ -47,11 +47,11 @@ simplicity.
 ```sh
 $ pot --users=john,jane,doe
 
-User                  | Authored | Reviewing | Actionable PRs | Untouched PRs
+User                  | Authored | Reviewing | Total | Actionable | Untouched
 -----------------------------------------------------------------------------
-john                           2           1                3               0
-jane                           1           2                2               0
-doe                            3           0                1               0
+doe                            3           0       3            1           0
+jane                           1           2       3            2           0
+john                           2           1       3            3           0
 ```
 
 Note: By default, `pot` only counts open PRs.
@@ -65,7 +65,10 @@ approved, or rejected the PR. If user is a requested reviewer, or if user has
 placed comments but has not approved or rejeted the PR, they are considered
 **active reviewers**, and said PR counts as one they are currently reviewing.
 
-#### Actionable PRs
+#### Total
+Authored + Reviewing
+
+#### Actionable
 A PR is considered actionable for a user, when said user can
 perform any action in said PR, and is probably blocking another user. For
 example, if `john` is the author of a PR, and `jane` places some comments, that PR
@@ -73,12 +76,15 @@ becomes actionable for `john`, and non actionable for `jane`. When `john` respon
 `jane's` comments and re-requests review from her, PR becomes non actionable for
 `john` and actionable for `jane`.
 
-#### Untouched PRs
+#### Untouched
 When a user is requested to review a PR, and until the moment
 they place their first comment, that PR is considered untouched for said user.
 This is useful when workload ends up unevenly distributed amongst devs, and a
 dev who has an easier time, tries to decide whose PR they are going to review to
 even the load.
+
+### Note:
+The above rows are sorted. First by **Total**, then by **Actionable**, and finally by **Untouched** (asc). This way, the most likely candidate to whom a new PR will be assigned, will be closer to the top, and the most likely candidate who might need some help with their PRs, will be closer to the bottom.
 
 ## Details about a specific user's PRs
 
@@ -89,9 +95,9 @@ will want more details about a specific user's PRs. In that case the
 ```sh
 $ pot --user=doe
 
-User                  | Authored | Reviewing | Actionable PRs | Untouched PRs
+User                  | Authored | Reviewing | Total | Actionable | Untouched
 -----------------------------------------------------------------------------
-doe                            2           3                3               1
+doe                            2           3       5            3           1
 
 Authored:
 ---------
