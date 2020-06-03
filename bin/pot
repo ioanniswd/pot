@@ -212,7 +212,7 @@ def table_print
           authored.to_s + add_authored_space(counts[:active_reviewer]),
           reviewing.to_s.ljust('Total | '.size),
           total.to_s.ljust('Actionable PRs | '.size),
-          actionables_per_author[user].to_s.ljust('Actionable PRs |'.size),
+          actionables_per_author[user].to_s.ljust('Untouched PRs | '.size),
           untouched_per_author[user].to_s
         ].join
       )
