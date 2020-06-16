@@ -44,6 +44,10 @@ class Pr
     !all_past_reviewers.include?(user)
   end
 
+  def num_of_reviewers
+    (all_past_reviewers + requested_reviewers).uniq.size
+  end
+
   private
 
   def reviewers
