@@ -55,7 +55,7 @@ class Pr
   private
 
   def reviewers
-    reviewers = reviews.
+    @reviewers ||= reviews.
       group_by { |review| review[:author] }.
       map { |reviewer, reviews| latest_review(reviewer, reviews)}.
       select { |review| review[:state] == 'CHANGES_REQUESTED' }.
@@ -89,7 +89,7 @@ class Pr
   end
 
   def reviews
-    reviews = hash['reviews']['edges'].map do |review|
+    @reviews ||= hash['reviews']['edges'].map do |review|
       {
         author: review['node']['author']['login'],
         state: review['node']['state'],
@@ -99,7 +99,7 @@ class Pr
   end
 
   def all_past_reviewers
-    reviewers = reviews.
+    @all_past_reviewers ||= reviews.
       map { |review| review[:author] }.
       uniq
   end
