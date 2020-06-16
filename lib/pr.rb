@@ -44,6 +44,10 @@ class Pr
     !all_past_reviewers.include?(user)
   end
 
+  def num_of_approvals
+    approved_reviewers.size
+  end
+
   def num_of_reviewers
     (all_past_reviewers + requested_reviewers).uniq.size
   end
@@ -98,5 +102,14 @@ class Pr
     reviewers = reviews.
       map { |review| review[:author] }.
       uniq
+  end
+
+  def approved_reviewers
+    @approved_reviewers ||= reviews.
+      group_by { |review| review[:author] }.
+      map { |reviewer, reviews| latest_review(reviewer, reviews)}.
+      select { |review| review[:state] == 'APPROVED' }.
+      map { |review| review[:reviewer] }.
+      reject { |reviewer| reviewer == author }
   end
 end
