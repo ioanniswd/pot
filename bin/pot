@@ -41,21 +41,26 @@ def main
   if options[:user]
     puts 'Authored:'
     puts '---------'
-    puts 'Actionable | PR'
+    puts 'Actionable | Approved/All_Reviewers | PR'
     user_prs[:authored].
       sort { |user_pr| user_pr[:actionable] ? 0 : 1 }.
       each do |user_pr|
         state = user_pr[:actionable] ? 'Yes' : 'No'
         state = state.ljust('Actionable |'.size)
 
-        puts "#{state} #{user_pr[:title]}"
+        num_of_approvals = user_pr[:num_of_approvals].to_s.rjust('Approved'.size - 1)
+        num_of_reviewers = user_pr[:num_of_reviewers].to_s.ljust('All_Reviewers |'.size - 1)
+
+        approved_to_num_of_reviewers = "#{num_of_approvals} / #{num_of_reviewers}"
+
+        puts "#{state} #{approved_to_num_of_reviewers} #{user_pr[:title]}"
       end
 
     puts
 
     puts 'Reviewing:'
     puts '----------'
-    puts 'Actionable | Untouched | Author: Actionables | PR'
+    puts 'Actionable | Untouched | Author: Actionables | Approved/All_Reviewers | PR'
     user_prs[:reviewing].
       # Putting actionable PRs first and then sorting by author actionables
       # count
@@ -78,7 +83,13 @@ def main
         author_actionables = "#{user_pr[:author]}: #{actionables_per_author[user_pr[:author]]}"
         author_actionables = author_actionables.ljust('Author: Actionables |'.size)
 
-        puts "#{state} #{untouched} #{author_actionables} #{user_pr[:title]}"
+        num_of_approvals = user_pr[:num_of_approvals].to_s.rjust('Approved'.size - 1)
+        num_of_reviewers = user_pr[:num_of_reviewers].to_s.ljust('All_Reviewers |'.size - 1)
+
+        approved_to_num_of_reviewers = "#{num_of_approvals} / #{num_of_reviewers}"
+
+        puts "#{state} #{untouched} #{author_actionables} " \
+          "#{approved_to_num_of_reviewers} #{user_pr[:title]}"
       end
   end
 end
@@ -150,12 +161,24 @@ def user_pr_counts
 
     if pr.author == options[:user]
       actionable = pr.author_actionable?
-      user_prs[:authored] << { title: "#{pr.title} (#{pr.url})", actionable: actionable }
+      user_prs[:authored] << {
+        title: "#{pr.title} (#{pr.url})",
+        actionable: actionable,
+        num_of_approvals: pr.num_of_approvals,
+        num_of_reviewers: pr.num_of_reviewers
+      }
     end
 
     if pr.active_reviewers.include?(options[:user])
       actionable = pr.reviewer_actionable?(user: options[:user])
-      user_prs[:reviewing] << { title: "#{pr.title} (#{pr.url})", actionable: actionable, author: pr.author, untouched: pr.untouched_by(options[:user]) }
+      user_prs[:reviewing] << {
+        title: "#{pr.title} (#{pr.url})",
+        actionable: actionable,
+        author: pr.author,
+        untouched: pr.untouched_by(options[:user]),
+        num_of_approvals: pr.num_of_approvals,
+        num_of_reviewers: pr.num_of_reviewers
+      }
     end
 
     # Increment actionable counts

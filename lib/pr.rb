@@ -44,10 +44,18 @@ class Pr
     !all_past_reviewers.include?(user)
   end
 
+  def num_of_approvals
+    approved_reviewers.size
+  end
+
+  def num_of_reviewers
+    (all_past_reviewers + requested_reviewers).uniq.size
+  end
+
   private
 
   def reviewers
-    reviewers = reviews.
+    @reviewers ||= reviews.
       group_by { |review| review[:author] }.
       map { |reviewer, reviews| latest_review(reviewer, reviews)}.
       select { |review| review[:state] == 'CHANGES_REQUESTED' }.
@@ -81,7 +89,7 @@ class Pr
   end
 
   def reviews
-    reviews = hash['reviews']['edges'].map do |review|
+    @reviews ||= hash['reviews']['edges'].map do |review|
       {
         author: review['node']['author']['login'],
         state: review['node']['state'],
@@ -91,8 +99,17 @@ class Pr
   end
 
   def all_past_reviewers
-    reviewers = reviews.
+    @all_past_reviewers ||= reviews.
       map { |review| review[:author] }.
-      uniq
+      uniq - [author]
+  end
+
+  def approved_reviewers
+    @approved_reviewers ||= reviews.
+      group_by { |review| review[:author] }.
+      map { |reviewer, reviews| latest_review(reviewer, reviews)}.
+      select { |review| review[:state] == 'APPROVED' }.
+      map { |review| review[:reviewer] }.
+      reject { |reviewer| reviewer == author }
   end
 end
