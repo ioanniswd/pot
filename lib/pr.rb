@@ -101,7 +101,7 @@ class Pr
   def all_past_reviewers
     @all_past_reviewers ||= reviews.
       map { |review| review[:author] }.
-      uniq
+      uniq - [author]
   end
 
   def approved_reviewers
