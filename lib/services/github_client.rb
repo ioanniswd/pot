@@ -31,7 +31,7 @@ class GithubClient
     request['Authorization'] = "bearer #{ENV['GAT']}"
 
     if last_cursor
-      after = ", after: #{last_cursor}"
+      after = ", after: \"#{last_cursor}\""
     end
 
     request.body = JSON.dump({
