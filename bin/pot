@@ -43,15 +43,15 @@ def main
   if options[:user]
     puts 'Authored:'
     puts '---------'
-    puts 'Actionable | Approved/All_Reviewers | PR'
+    puts 'Actionable | Approvals | PR'
     user_prs[:authored].
       sort { |user_pr| user_pr[:actionable] ? 0 : 1 }.
       each do |user_pr|
         state = user_pr[:actionable] ? 'Yes' : 'No'
         state = state.ljust('Actionable |'.size)
 
-        num_of_approvals = user_pr[:num_of_approvals].to_s.rjust('Approved'.size - 1)
-        num_of_reviewers = user_pr[:num_of_reviewers].to_s.ljust('All_Reviewers |'.size - 1)
+        num_of_approvals = user_pr[:num_of_approvals].to_s.rjust('Approvals |'.size / 2 - 2)
+        num_of_reviewers = user_pr[:num_of_reviewers].to_s.ljust('Approvals |'.size / 2)
 
         approved_to_num_of_reviewers = "#{num_of_approvals} / #{num_of_reviewers}"
 
@@ -62,7 +62,7 @@ def main
 
     puts 'Reviewing:'
     puts '----------'
-    puts 'Actionable | Untouched | Author: Actionables | Approved/All_Reviewers | PR'
+    puts 'Actionable | Untouched | Author: Actionables | Approvals | PR'
     user_prs[:reviewing].
       # Putting actionable PRs first and then sorting by author actionables
       # count
@@ -85,8 +85,8 @@ def main
         author_actionables = "#{user_pr[:author]}: #{actionables_per_author[user_pr[:author]]}"
         author_actionables = author_actionables.ljust('Author: Actionables |'.size)
 
-        num_of_approvals = user_pr[:num_of_approvals].to_s.rjust('Approved'.size - 1)
-        num_of_reviewers = user_pr[:num_of_reviewers].to_s.ljust('All_Reviewers |'.size - 1)
+        num_of_approvals = user_pr[:num_of_approvals].to_s.rjust('Approvals |'.size / 2 - 2)
+        num_of_reviewers = user_pr[:num_of_reviewers].to_s.ljust('Approvals |'.size / 2)
 
         approved_to_num_of_reviewers = "#{num_of_approvals} / #{num_of_reviewers}"
 
