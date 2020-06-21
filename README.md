@@ -117,7 +117,7 @@ Note: Both `--users=<user, names>` and `--user='user'` can be used:
 ```sh
 $ pot --users=john,jane --user=doe
 ```
-And both the accumulative and the specif output will be shown
+And both the accumulative and the specific output will be shown
 
 In the above example, the accumulative data is shown for user `doe`, as well
 as some details about each of the PRs they are involved in. This can be used by
