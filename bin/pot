@@ -43,7 +43,7 @@ def main
   if options[:user]
     puts 'Authored:'
     puts '---------'
-    puts 'Actionable | Approvals | PR'
+    puts 'Actionable | Approvals |     +/-     | PR'
     user_prs[:authored].
       sort { |user_pr| user_pr[:actionable] ? 0 : 1 }.
       each do |user_pr|
@@ -55,14 +55,20 @@ def main
 
         approved_to_num_of_reviewers = "#{num_of_approvals} / #{num_of_reviewers}"
 
-        puts "#{state} #{approved_to_num_of_reviewers} #{user_pr[:title]}"
+        additions = user_pr[:additions].to_s.rjust('   +/-     |'.size / 2 - 2)
+        deletions = user_pr[:deletions].to_s.ljust('   +/-     |'.size / 2)
+
+        changes_ratio = "#{additions} / #{deletions}"
+
+        puts "#{state} #{approved_to_num_of_reviewers} #{changes_ratio}" \
+          " #{user_pr[:title]}"
       end
 
     puts
 
     puts 'Reviewing:'
     puts '----------'
-    puts 'Actionable | Untouched | Author: Actionables | Approvals | PR'
+    puts 'Actionable | Untouched | Author: Actionables | Approvals |     +/-     | PR'
     user_prs[:reviewing].
       # Putting actionable PRs first and then sorting by author actionables
       # count
@@ -90,8 +96,13 @@ def main
 
         approved_to_num_of_reviewers = "#{num_of_approvals} / #{num_of_reviewers}"
 
+        additions = user_pr[:additions].to_s.rjust('   +/-     |'.size / 2 - 2)
+        deletions = user_pr[:deletions].to_s.ljust('   +/-     |'.size / 2)
+
+        changes_ratio = "#{additions} / #{deletions}"
+
         puts "#{state} #{untouched} #{author_actionables} " \
-          "#{approved_to_num_of_reviewers} #{user_pr[:title]}"
+          "#{approved_to_num_of_reviewers} #{changes_ratio} #{user_pr[:title]}"
       end
   end
 end
@@ -167,7 +178,9 @@ def user_pr_counts
         title: "#{pr.title} (#{pr.url})",
         actionable: actionable,
         num_of_approvals: pr.num_of_approvals,
-        num_of_reviewers: pr.num_of_reviewers
+        num_of_reviewers: pr.num_of_reviewers,
+        additions: pr.additions,
+        deletions: pr.deletions
       }
     end
 
@@ -179,7 +192,9 @@ def user_pr_counts
         author: pr.author,
         untouched: pr.untouched_by(options[:user]),
         num_of_approvals: pr.num_of_approvals,
-        num_of_reviewers: pr.num_of_reviewers
+        num_of_reviewers: pr.num_of_reviewers,
+        additions: pr.additions,
+        deletions: pr.deletions
       }
     end
 
