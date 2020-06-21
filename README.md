@@ -101,16 +101,16 @@ doe                            2           3       5            3           1
 
 Authored:
 ---------
-Actionable | Approved/All_Reviewers | PR
-Yes                2 / 2              Add feature cool (PR_url)
-No                 1 / 3              Fix bug wah(PR_url)
+Actionable | Approvals |     +/-     | PR
+Yes            2 / 2     4729 / 1561   Add feature cool (PR_url)
+No             1 / 3       12 / 58     Fix bug wah(PR_url)
 
 Reviewing:
 ----------
-Actionable | Untouched | Author: Actionables | Approved/All_Reviewers | PR
-Yes          Yes         john: 1                     1 / 2              Add feature wow (PR_url)
-Yes          No          john: 1                     0 / 2              Fix bug dang (PR_url)
-No           No          jane: 2                     3 / 3              Improve styles (PR_url)
+Actionable | Untouched | Author: Actionables | Approvals |     +/-     | PR
+Yes          Yes         john: 1                 1 / 2      304 / 39     Add feature wow (PR_url)
+Yes          No          john: 1                 0 / 2      237 / 435    Fix bug dang (PR_url)
+No           No          jane: 2                 3 / 3        5 / 2      Improve styles (PR_url)
 ```
 
 Note: Both `--users=<user, names>` and `--user='user'` can be used:
@@ -124,8 +124,11 @@ as some details about each of the PRs they are involved in. This can be used by
 `doe` to figure out which PR needs their attention first, or by another user
 who happened to have some idle time and wants to help out.
 
-#### Approved/All_Reviewers
+#### Approvals
 The ratio of users who have approved the PR, to all users ever involved in the PR.
+
+#### +/-
+Additions / Deletions in lines of code
 
 ## List all of user's PR urls
 
