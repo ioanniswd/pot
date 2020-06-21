@@ -52,6 +52,14 @@ class Pr
     (all_past_reviewers + requested_reviewers).uniq.size
   end
 
+  def additions
+    hash['additions']
+  end
+
+  def deletions
+    hash['deletions']
+  end
+
   private
 
   def reviewers
