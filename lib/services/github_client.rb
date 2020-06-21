@@ -10,15 +10,18 @@ class GithubClient
   def self.prs
     _prs = []
 
-    has_next = true
+    repository_names.each do |repository_name|
+      has_next = true
+      last_cursor = nil
 
-    while has_next
-      last_cursor = _prs.last&.dig('cursor')&.gsub(/=*$/, '')
+      while has_next
+        response = next_request(last_cursor, repository_name)
+        has_next = response['pageInfo']['hasNextPage']
 
-      response = next_request(last_cursor)
-      has_next = response['pageInfo']['hasNextPage']
+        _prs += response['edges']
 
-      _prs += response['edges']
+        last_cursor = _prs.last&.dig('cursor')&.gsub(/=*$/, '')
+      end
     end
 
     _prs
@@ -26,7 +29,7 @@ class GithubClient
 
   private
 
-  def self.next_request(last_cursor)
+  def self.next_request(last_cursor, repository_name)
     request = Net::HTTP::Post.new(uri)
     request['Authorization'] = "bearer #{ENV['GAT']}"
 
@@ -55,8 +58,8 @@ class GithubClient
     config.github_url
   end
 
-  def self.repository_name
-    config.repository_name
+  def self.repository_names
+    config.repository_names.gsub(' ', '').split(',')
   end
 
   def self.owner_name

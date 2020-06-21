@@ -14,6 +14,8 @@ def main
     end
 
     config.init
+
+    exit(0) if options[:config]
   end
 
   if options[:url_only]

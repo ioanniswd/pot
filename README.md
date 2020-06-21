@@ -1,6 +1,6 @@
 # pot
 
-A CLI to instantly get an overview of a repo's PRs, and decide which PR to act upon next.
+A CLI to instantly get an overview of one or more repos' PRs, and decide which PR to act upon next.
 
 ![Version badge](https://img.shields.io/badge/version-1.0.0-green.svg)
 
@@ -8,7 +8,7 @@ A CLI to instantly get an overview of a repo's PRs, and decide which PR to act u
 
 # How it works
 
-`pot` creates accumulated data for users concerning one repository, using
+`pot` creates accumulated data for users concerning one or more repositories, using
 github's graphql api.
 
 # Installation
@@ -117,7 +117,7 @@ Note: Both `--users=<user, names>` and `--user='user'` can be used:
 ```sh
 $ pot --users=john,jane --user=doe
 ```
-And both the accumulative and the specif output will be shown
+And both the accumulative and the specific output will be shown
 
 In the above example, the accumulative data is shown for user `doe`, as well
 as some details about each of the PRs they are involved in. This can be used by

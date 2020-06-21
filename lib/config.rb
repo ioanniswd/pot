@@ -13,8 +13,8 @@ class Config
     print 'What is the organizations github url(e.g. github.<company>.com): '
     @github_url = gets.strip
 
-    print 'Repository name: '
-    @repository_name = gets.strip
+    print 'Repository names (comma separated): '
+    @repository_names = gets.strip
 
     print 'Who is the owner of the repository(org name): '
     @owner_name = gets.strip
@@ -26,8 +26,8 @@ class Config
     @github_url ||= config["github_url"]
   end
 
-  def repository_name
-    @repository_name ||= config["repository_name"]
+  def repository_names
+    @repository_names ||= config["repository_names"]
   end
 
   def owner_name
@@ -45,7 +45,7 @@ class Config
       CONFIG_FILE_PATH,
       JSON.pretty_generate({
         github_url: github_url,
-        repository_name: repository_name,
+        repository_names: repository_names,
         owner_name: owner_name
       })
     )
