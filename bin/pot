@@ -245,7 +245,8 @@ def table_print
     user_pr_counts: user_pr_counts,
     options: options,
     actionables_per_author: actionables_per_author,
-    untouched_per_author: untouched_per_author
+    untouched_per_author: untouched_per_author,
+    users_to_include: users_to_include
   )
 
   pr_users.
