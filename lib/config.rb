@@ -11,13 +11,16 @@ class Config
     end
 
     print 'What is the organizations github url(e.g. github.<company>.com): '
-    @github_url = gets.strip
+    input = gets.strip
+    @github_url = input if input.size > 0
 
     print 'Repository names (comma separated): '
-    @repository_names = gets.strip
+    input = gets.strip
+    @repository_names  = input if input.size > 0
 
     print 'Who is the owner of the repository(org name): '
-    @owner_name = gets.strip
+    input = gets.strip
+    @owner_name  = input if input.size > 0
 
     save_config
   end
