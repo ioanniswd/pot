@@ -6,7 +6,7 @@ class PrUser
     :untouched_count
   )
 
-  def initialize(user:, user_pr_counts:, actionable_count:, untouched_count:)
+  def initialize(user:, user_pr_counts: nil, actionable_count:, untouched_count:)
     @username = user
     @user_pr_counts = user_pr_counts
     @actionable_count = actionable_count
@@ -14,10 +14,14 @@ class PrUser
   end
 
   def authored_count
+    return 0 if user_pr_counts.nil?
+
     user_pr_counts[:author]
   end
 
   def reviewing_count
+    return 0 if user_pr_counts.nil?
+
     user_pr_counts[:active_reviewer]
   end
 

@@ -245,7 +245,8 @@ def table_print
     user_pr_counts: user_pr_counts,
     options: options,
     actionables_per_author: actionables_per_author,
-    untouched_per_author: untouched_per_author
+    untouched_per_author: untouched_per_author,
+    users_to_include: users_to_include
   )
 
   pr_users.
@@ -281,7 +282,15 @@ def table_print
 end
 
 def user_included?(user)
-  options[:users]&.include?(user) || options[:user] == user
+  users_to_include.include?(user)
+end
+
+def users_to_include
+  return @users_to_include if @users_to_include
+
+  users = options[:users].split(',') || []
+
+  @users_to_include = users.push(options[:user]).compact
 end
 
 def largest_author_name_size
