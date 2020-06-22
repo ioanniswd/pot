@@ -8,14 +8,10 @@ require_relative '../lib/services/github_client.rb'
 require_relative '../lib/pr_user_collection'
 
 def main
-  if options[:config] || !config.initialized?
-    if !options[:config] && !config.initialized?
-      puts 'You need to set your config first'
-    end
-
+  if options[:config]
     config.init
 
-    exit(0) if options[:config]
+    exit(0)
   end
 
   if options[:url_only]
