@@ -6,10 +6,14 @@ require 'date'
 require_relative '../config'
 
 class GithubClient
-  attr_reader :options
+  attr_reader(
+    :options,
+    :config
+  )
 
-  def initialize(options:)
+  def initialize(options:, config:)
     @options = options
+    @config = config
   end
 
   # Returns an array of hashes, each hash containing information on a pr
@@ -84,10 +88,6 @@ class GithubClient
 
   def owner_name
     options[:owner_name] || config.owner_name
-  end
-
-  def config
-    @config ||= Config.new
   end
 
   def uri

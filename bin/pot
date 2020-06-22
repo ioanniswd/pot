@@ -185,7 +185,7 @@ def prs
 end
 
 def github_client
-  GithubClient.new(options: options)
+  GithubClient.new(options: options, config: config)
 end
 
 def user_pr_counts
