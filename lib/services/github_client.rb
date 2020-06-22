@@ -16,6 +16,13 @@ class GithubClient
   def prs
     _prs = []
 
+    if repository_names.nil? || repository_names == ''
+      puts 'Attribute repository_names must be provided either through the' \
+        ' config, or through an option'
+
+      exit(1)
+    end
+
     repository_names.each do |repository_name|
       has_next = true
       last_cursor = nil
@@ -41,6 +48,13 @@ class GithubClient
 
     if last_cursor
       after = ", after: \"#{last_cursor}\""
+    end
+
+    if owner_name.nil? || owner_name == ''
+      puts 'Attribute owner_name must be provided either through the' \
+        ' config, or through an option'
+
+      exit(1)
     end
 
     request.body = JSON.dump({
@@ -78,6 +92,13 @@ class GithubClient
 
   def uri
     return @uri if @uri
+
+    if github_url.nil? || github_url == ''
+      puts 'Attribute github_url must be provided either through the config, or' \
+        ' through an option'
+
+      exit(1)
+    end
 
     @uri = URI.parse(github_url)
 
