@@ -55,6 +55,10 @@ class Config
     save_config
   end
 
+  def registered_config(register_name)
+    all_registered_configs[register_name]
+  end
+
   private
 
   def save_config

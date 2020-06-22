@@ -18,6 +18,11 @@ def main
     config.register_new(options[:registered_name])
   end
 
+  # Use previously saved register
+  if options[:registered]
+    overwrite_options_with_registered
+  end
+
   if options[:url_only]
     if options[:user].nil?
       puts 'Option "url_only" can be only be used with --user=<the_user>'
@@ -191,6 +196,15 @@ OptionParser.new do |opts|
     options[:register_new] = true
     options[:registered_name] = value
   end
+
+  opts.on(
+    '--registered=registered_name',
+    '--registered',
+    'The already registered options under <registered_name> to be used with command'
+  ) do |value|
+    options[:registered] = true
+    options[:registered_name] = value
+  end
 end.parse!
 
 def prs
@@ -349,6 +363,22 @@ end
 
 def config
   @config ||= Config.new(options: options)
+end
+
+def overwrite_options_with_registered
+  if !registered_config
+    puts "Registered config #{options[:registered]} was not found"
+
+    exit(1)
+  end
+
+  registered_config.keys.each do |key|
+    options[key.to_sym] ||= registered_config[key]
+  end
+end
+
+def registered_config
+  config.registered_config(options[:registered_name])
 end
 
 main
