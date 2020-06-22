@@ -8,14 +8,10 @@ require_relative '../lib/services/github_client.rb'
 require_relative '../lib/pr_user_collection'
 
 def main
-  if options[:config] || !config.initialized?
-    if !options[:config] && !config.initialized?
-      puts 'You need to set your config first'
-    end
-
+  if options[:config]
     config.init
 
-    exit(0) if options[:config]
+    exit(0)
   end
 
   if options[:url_only]
@@ -158,10 +154,38 @@ OptionParser.new do |opts|
 
     exit(1) if options[:url_only].nil?
   end
+
+  opts.on(
+    '--github_url=url',
+    '--github_url',
+    'The github url to use for the requests, defaults to github_url in config file'
+  ) do |value|
+    options[:github_url] = value
+  end
+
+  opts.on(
+    '--owner_name=owner_name',
+    '--owner_name',
+    'The owner name to use in the requests, defaults to owner_name in config file'
+  ) do |value|
+    options[:owner_name] = value
+  end
+
+  opts.on(
+    '--repository_names=repository_names',
+    '--repository_names',
+    'The repository names to search, defaults to repository_names in config file'
+  ) do |value|
+    options[:repository_names] = value
+  end
 end.parse!
 
 def prs
-  @prs ||= GithubClient.prs.map { |pr| Pr.new(pr) }
+  @prs ||= github_client.prs.map { |pr| Pr.new(pr) }
+end
+
+def github_client
+  GithubClient.new(options: options, config: config)
 end
 
 def user_pr_counts

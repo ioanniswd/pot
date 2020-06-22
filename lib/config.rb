@@ -37,10 +37,6 @@ class Config
     @owner_name ||= config["owner_name"]
   end
 
-  def initialized?
-    File.exists?(CONFIG_FILE_PATH)
-  end
-
   private
 
   def save_config
@@ -55,6 +51,10 @@ class Config
   end
 
   def config
-    @config ||= JSON.parse(File.read(CONFIG_FILE_PATH))
+    @config ||= if File.exists?(CONFIG_FILE_PATH)
+                  JSON.parse(File.read(CONFIG_FILE_PATH))
+                else
+                  {}
+                end
   end
 end

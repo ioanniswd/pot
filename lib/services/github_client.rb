@@ -6,9 +6,26 @@ require 'date'
 require_relative '../config'
 
 class GithubClient
+  attr_reader(
+    :options,
+    :config
+  )
+
+  def initialize(options:, config:)
+    @options = options
+    @config = config
+  end
+
   # Returns an array of hashes, each hash containing information on a pr
-  def self.prs
+  def prs
     _prs = []
+
+    if repository_names.nil? || repository_names == ''
+      puts 'Attribute repository_names must be provided either through the' \
+        ' config, or through an option'
+
+      exit(1)
+    end
 
     repository_names.each do |repository_name|
       has_next = true
@@ -29,12 +46,19 @@ class GithubClient
 
   private
 
-  def self.next_request(last_cursor, repository_name)
+  def next_request(last_cursor, repository_name)
     request = Net::HTTP::Post.new(uri)
     request['Authorization'] = "bearer #{ENV['GAT']}"
 
     if last_cursor
       after = ", after: \"#{last_cursor}\""
+    end
+
+    if owner_name.nil? || owner_name == ''
+      puts 'Attribute owner_name must be provided either through the' \
+        ' config, or through an option'
+
+      exit(1)
     end
 
     request.body = JSON.dump({
@@ -54,24 +78,27 @@ class GithubClient
 
   private
 
-  def self.github_url
-    config.github_url
+  def github_url
+    options[:github_url] || config.github_url
   end
 
-  def self.repository_names
-    config.repository_names.gsub(' ', '').split(',')
+  def repository_names
+    (options[:repository_names] || config.repository_names)&.gsub(' ', '')&.split(',')
   end
 
-  def self.owner_name
-    config.owner_name
+  def owner_name
+    options[:owner_name] || config.owner_name
   end
 
-  def self.config
-    @config ||= Config.new
-  end
-
-  def self.uri
+  def uri
     return @uri if @uri
+
+    if github_url.nil? || github_url == ''
+      puts 'Attribute github_url must be provided either through the config, or' \
+        ' through an option'
+
+      exit(1)
+    end
 
     @uri = URI.parse(github_url)
 
