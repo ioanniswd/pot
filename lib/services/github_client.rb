@@ -65,7 +65,7 @@ class GithubClient
   end
 
   def repository_names
-    config.repository_names.gsub(' ', '').split(',')
+    (options[:repository_names] || config.repository_names)&.gsub(' ', '')&.split(',')
   end
 
   def owner_name
