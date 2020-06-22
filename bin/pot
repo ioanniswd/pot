@@ -166,6 +166,14 @@ OptionParser.new do |opts|
   ) do |value|
     options[:github_url] = value
   end
+
+  opts.on(
+    '--owner_name=owner_name',
+    '--owner_name',
+    'The owner name to use in the requests, defaults to owner_name in config file'
+  ) do |value|
+    options[:owner_name] = value
+  end
 end.parse!
 
 def prs

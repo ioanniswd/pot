@@ -69,7 +69,7 @@ class GithubClient
   end
 
   def owner_name
-    config.owner_name
+    options[:owner_name] || config.owner_name
   end
 
   def config
