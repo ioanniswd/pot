@@ -161,7 +161,11 @@ OptionParser.new do |opts|
 end.parse!
 
 def prs
-  @prs ||= GithubClient.prs.map { |pr| Pr.new(pr) }
+  @prs ||= github_client.prs.map { |pr| Pr.new(pr) }
+end
+
+def github_client
+  GithubClient.new(options: options)
 end
 
 def user_pr_counts

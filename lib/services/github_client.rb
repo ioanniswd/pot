@@ -6,8 +6,14 @@ require 'date'
 require_relative '../config'
 
 class GithubClient
+  attr_reader :options
+
+  def initialize(options:)
+    @options = options
+  end
+
   # Returns an array of hashes, each hash containing information on a pr
-  def self.prs
+  def prs
     _prs = []
 
     repository_names.each do |repository_name|
@@ -29,7 +35,7 @@ class GithubClient
 
   private
 
-  def self.next_request(last_cursor, repository_name)
+  def next_request(last_cursor, repository_name)
     request = Net::HTTP::Post.new(uri)
     request['Authorization'] = "bearer #{ENV['GAT']}"
 
@@ -54,23 +60,23 @@ class GithubClient
 
   private
 
-  def self.github_url
+  def github_url
     config.github_url
   end
 
-  def self.repository_names
+  def repository_names
     config.repository_names.gsub(' ', '').split(',')
   end
 
-  def self.owner_name
+  def owner_name
     config.owner_name
   end
 
-  def self.config
+  def config
     @config ||= Config.new
   end
 
-  def self.uri
+  def uri
     return @uri if @uri
 
     @uri = URI.parse(github_url)
