@@ -150,8 +150,12 @@ $ pot --user=doe | xargs -L1 xdg-open
 $ pot --config
 ```
 Follow the wizard to define the github url, repository and owner names.
+You can provide all said config options as params, like so:
 
-Note: If `pot` is used without a configuration, you will be prompted for one.
+```sh
+$ pot --user=doe --repository_names "octo, cat" --owner_name 'repo_owner_name' --github_url 'github.<company_name>.com'
+
+```
 
 # Contributing
 
