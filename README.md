@@ -157,6 +157,27 @@ $ pot --user=doe --repository_names "octo, cat" --owner_name 'repo_owner_name' -
 
 ```
 
+# Register
+In case command is usually being used with certain options, options can be saved
+under a certain name like so:
+
+```sh
+$ pot --users=jane,jack --user=doe --repository_names "octo, cat" --register_new <register_name>
+```
+And then:
+
+```sh
+$ pot --registered <register_name>
+```
+
+In the above example, options `users`, `user` etc are being filled through the
+saved registry in the config.
+
+You can also override some of the underlying options saved in the registry:
+```sh
+$ pot --registered <register_name> --repository_names 'some, other, repos'
+```
+
 # Contributing
 
 1. Create an issue describing the purpose of the pull request unless there is one already
