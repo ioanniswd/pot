@@ -14,6 +14,10 @@ def main
     exit(0)
   end
 
+  if options[:register_new]
+    config.register_new(options[:registered_name])
+  end
+
   if options[:url_only]
     if options[:user].nil?
       puts 'Option "url_only" can be only be used with --user=<the_user>'
@@ -178,6 +182,15 @@ OptionParser.new do |opts|
   ) do |value|
     options[:repository_names] = value
   end
+
+  opts.on(
+    '--register_new=registered_name',
+    '--register_new',
+    'The name under which current options will be save to be used with --registered <registered_name>'
+  ) do |value|
+    options[:register_new] = true
+    options[:registered_name] = value
+  end
 end.parse!
 
 def prs
@@ -335,7 +348,7 @@ def add_authored_space(reviewing_count)
 end
 
 def config
-  @config ||= Config.new
+  @config ||= Config.new(options: options)
 end
 
 main
