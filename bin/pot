@@ -158,6 +158,14 @@ OptionParser.new do |opts|
 
     exit(1) if options[:url_only].nil?
   end
+
+  opts.on(
+    '--github_url=url',
+    '--github_url',
+    'The github url to use for the requests, defaults to github_url in config file'
+  ) do |value|
+    options[:github_url] = value
+  end
 end.parse!
 
 def prs

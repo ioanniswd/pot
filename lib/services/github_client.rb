@@ -61,7 +61,7 @@ class GithubClient
   private
 
   def github_url
-    config.github_url
+    options[:github_url] || config.github_url
   end
 
   def repository_names
