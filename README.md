@@ -62,7 +62,7 @@ Number of PRs authored by the user
 #### Reviewing
 Number of PRs currently reviewing, meaning that said user has not
 approved, or rejected the PR. If user is a requested reviewer, or if user has
-placed comments but has not approved or rejected the PR, they are considered
+placed comments but has not approved or rejected the PR yet, they are considered
 **active reviewers**, and said PR counts as one they are currently reviewing.
 
 #### Total
