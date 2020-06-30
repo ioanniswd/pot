@@ -145,6 +145,20 @@ $ pot --user=doe | xargs -L1 xdg-open
 ```
 
 
+## List all with PRs in mind
+In case where an overview of all PRs is required as opposed to an overview of a
+certain user's workload.
+
+```sh
+Number | Title                                                  | Date       | Author          |     +/-     | Approvals | URL
+#235     Feature wow                                              2020-02-13   john               223 / 0        3 / 4     PR_url
+#241     Bug fix dang                                             2020-02-15   jane              2078 / 86       2 / 2     PR_url
+#248     Enhancement super                                        2020-03-01   doe                 69 / 2        0 / 3     PR_url
+```
+
+Note: PRs are sorted here by date
+
+
 # Configuration
 ```sh
 $ pot --config
