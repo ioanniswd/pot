@@ -49,7 +49,7 @@ def main
     exit(0)
   end
 
-  puts table_print
+  puts user_table
 
   if options[:user]
     puts 'Authored:'
@@ -288,7 +288,7 @@ def user_pr_counts
   @user_pr_counts
 end
 
-def table_print
+def user_table
   output = [
     [
       'User' + ' ' * (largest_author_name_size - 'User'.size),
