@@ -60,6 +60,14 @@ class Pr
     hash['deletions']
   end
 
+  def number
+    hash['number']
+  end
+
+  def created_at
+    hash['createdAt'].match(/\d{4,}-\d{2,}-\d{2,}/).to_s
+  end
+
   private
 
   def reviewers
