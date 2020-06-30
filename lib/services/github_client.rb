@@ -62,7 +62,7 @@ class GithubClient
     end
 
     request.body = JSON.dump({
-      'query' => "query { repository(owner: \"#{owner_name}\", name: \"#{repository_name}\") { pullRequests(first: 80, states: OPEN#{after}) { pageInfo { hasNextPage } edges { cursor node { additions deletions reviews(first: 80) { edges { node { author { login } state createdAt }  } } reviewRequests(first: 80) { edges { node { requestedReviewer { ... on User { login } } } } } url title author { login } participants(first: 80) { edges { node { login } } } } } } } }"
+      'query' => "query { repository(owner: \"#{owner_name}\", name: \"#{repository_name}\") { pullRequests(first: 80, states: OPEN#{after}) { pageInfo { hasNextPage } edges { cursor node { additions deletions reviews(first: 80) { edges { node { author { login } state createdAt }  } } reviewRequests(first: 80) { edges { node { requestedReviewer { ... on User { login } } } } } createdAt number url title author { login } participants(first: 80) { edges { node { login } } } } } } } }"
     })
 
     req_options = {
