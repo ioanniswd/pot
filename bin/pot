@@ -43,7 +43,13 @@ def main
     exit(0)
   end
 
-  puts table_print
+  if options[:pr_first]
+    puts pr_table
+
+    exit(0)
+  end
+
+  puts user_table
 
   if options[:user]
     puts 'Authored:'
@@ -205,6 +211,10 @@ OptionParser.new do |opts|
     options[:registered] = true
     options[:registered_name] = value
   end
+
+  opts.on('--pr_first', 'Show list of PRs instead of users') do |value|
+    options[:pr_first] = true
+  end
 end.parse!
 
 def prs
@@ -278,7 +288,7 @@ def user_pr_counts
   @user_pr_counts
 end
 
-def table_print
+def user_table
   output = [
     [
       'User' + ' ' * (largest_author_name_size - 'User'.size),
@@ -332,6 +342,59 @@ def table_print
   nil
 end
 
+def pr_table
+  included_prs = prs.select { |pr| user_included?(pr.author) }
+
+  if included_prs.size == 0
+    puts 'No prs to show'
+    return
+  end
+
+  date_header = 'Date'.ljust('XXXX-XX-XX'.size) # date format used
+  author_header = 'Author'.ljust(largest_author_name_size)
+
+  output = [
+    [
+      'Number',
+      'Title'.ljust(largest_pr_title_size),
+      date_header,
+      author_header,
+      '    +/-    ',
+      'Approvals',
+      'URL'
+    ].join(' | ')
+  ]
+
+  prs.
+    sort_by(&:created_at).
+    each do |pr|
+      additions = pr.additions.to_s.rjust('    +/-    |'.size / 2 - 2)
+      deletions = pr.deletions.to_s.ljust('    +/-    |'.size / 2)
+
+      num_of_approvals = pr.num_of_approvals.to_s.rjust('Approvals | '.size / 2 - 2)
+      num_of_reviewers = pr.num_of_reviewers.to_s.ljust('Approvals | '.size / 2)
+
+      approved_to_num_of_reviewers = "#{num_of_approvals} / #{num_of_reviewers}"
+
+      output.push(
+        [
+          "##{pr.number}".ljust('Number | '.size),
+          pr.title.ljust(largest_pr_title_size + ' | '.size),
+          pr.created_at.ljust(date_header.size + ' | '.size),
+          pr.author.ljust(largest_author_name_size + ' | '.size),
+          "#{additions} / #{deletions}",
+          approved_to_num_of_reviewers.ljust('Approvals |'.size),
+          pr.url.ljust('URL |'.size)
+        ].join
+      )
+    end
+
+  puts output.join("\n")
+
+  nil
+end
+
+
 def user_included?(user)
   users_to_include.include?(user)
 end
@@ -348,6 +411,14 @@ def largest_author_name_size
   return @largest_author_name_size if !@largest_author_name_size.nil?
 
   @largest_author_name_size = prs.max_by { |pr| pr.author.size }.author.size
+end
+
+def largest_pr_title_size
+  return @largest_pr_title_size if !@largest_pr_title_size.nil?
+
+  @largest_pr_title_size = prs.
+    select { |pr| user_included?(pr.author) }.
+    max_by { |pr| pr.title.size }&.title&.size
 end
 
 def config
