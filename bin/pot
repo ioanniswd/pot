@@ -316,12 +316,12 @@ def table_print
       if(user_included?(user.username))
         output.push(
           [
-            user.username + add_user_space(user.username, user.authored_count),
-            user.authored_count.to_s + add_authored_space(user.reviewing_count),
-            user.reviewing_count.to_s.ljust('Total | '.size),
-            user.total_count.to_s.ljust('Actionable PRs | '.size),
-            user.actionable_count.to_s.ljust('Untouched PRs | '.size),
-            user.untouched_count.to_s
+            user.username.ljust(largest_author_name_size),
+            user.authored_count.to_s.rjust('Authored | '.size),
+            user.reviewing_count.to_s.rjust('Reviewing | '.size),
+            user.total_count.to_s.rjust('Total | '.size),
+            user.actionable_count.to_s.rjust('Actionable PRs | '.size),
+            user.untouched_count.to_s.rjust('Untouched PRs | '.size)
           ].join
         )
       end
@@ -348,17 +348,6 @@ def largest_author_name_size
   return @largest_author_name_size if !@largest_author_name_size.nil?
 
   @largest_author_name_size = prs.max_by { |pr| pr.author.size }.author.size
-end
-
-def add_user_space(user, author_count = 0)
-  ' ' * (
-    largest_author_name_size - user.size +
-    'Authored | '.size - author_count.to_s.size
-  )
-end
-
-def add_authored_space(reviewing_count)
-  ' ' * ('Reviewing | '.size - reviewing_count.to_s.size)
 end
 
 def config
