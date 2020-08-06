@@ -314,9 +314,9 @@ def table_print
       'Reviewing',
       'Total',
       ' Total + / - ',
-      'Actionable PRs',
+      'Actionables',
       'Actionable  + / -',
-      'Untouched PRs'
+      'Untouched'
     ].join(' | ')
   ]
 
@@ -366,9 +366,9 @@ def table_print
             user.reviewing_count.to_s.rjust('Reviewing | '.size),
             user.total_count.to_s.rjust('Total | '.size),
             total_loc,
-            user.actionable_count.to_s.rjust('Actionable PRs'.size),
+            user.actionable_count.to_s.rjust('Actionables'.size),
             actionable_loc,
-            user.untouched_count.to_s.rjust('Untouched PRs | '.size)
+            user.untouched_count.to_s.rjust('Untouched | '.size)
           ].join
         )
       end
