@@ -47,11 +47,11 @@ simplicity.
 ```sh
 $ pot --users=john,jane,doe
 
-User                  | Authored | Reviewing | Total | Actionable | Untouched
------------------------------------------------------------------------------
-doe                            3           0       3            1           0
-jane                           1           2       3            2           0
-john                           2           1       3            3           0
+User                  | Authored | Reviewing | Total |  Total + / -  | Actionables | Actionable + / - | Untouched
+-----------------------------------------------------------------------------------------------------------------
+doe                            3           0       3      146 / 82               1         40 / 37              0
+jane                           1           2       3      270 / 254              2        200 / 187             0
+john                           2           1       3       34 / 48               3         34 / 48              0
 ```
 
 Note: By default, `pot` only counts open PRs.
@@ -68,13 +68,19 @@ placed comments but has not approved or rejected the PR yet, they are considered
 #### Total
 Authored + Reviewing
 
-#### Actionable
+#### Total + / -
+Additions/Deletions for all active PRs of user
+
+#### Actionables
 A PR is considered actionable for a user, when said user can
 perform any action in said PR, and is probably blocking another user. For
 example, if `john` is the author of a PR, and `jane` places some comments, that PR
 becomes actionable for `john`, and non actionable for `jane`. When `john` responds to
 `jane's` comments and re-requests review from her, PR becomes non actionable for
 `john` and actionable for `jane`.
+
+#### Actionable + / -
+Additions/Deletions for all actionable PRs of user
 
 #### Untouched
 When a user is requested to review a PR, and until the moment
@@ -95,9 +101,9 @@ will want more details about a specific user's PRs. In that case the
 ```sh
 $ pot --user=doe
 
-User                  | Authored | Reviewing | Total | Actionable | Untouched
------------------------------------------------------------------------------
-doe                            2           3       5            3           1
+User                  | Authored | Reviewing | Total |  Total + / -  | Actionables | Actionable + / - | Untouched
+-----------------------------------------------------------------------------------------------------------------
+doe                            2           3       5    5287 / 2095              3       5270 / 2035            1
 
 Authored:
 ---------
