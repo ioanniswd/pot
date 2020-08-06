@@ -60,6 +60,10 @@ class Pr
     hash['deletions']
   end
 
+  def loc
+    additions + deletions
+  end
+
   private
 
   def reviewers

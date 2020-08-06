@@ -3,14 +3,16 @@ class PrUser
     :username,
     :user_pr_counts,
     :actionable_count,
-    :untouched_count
+    :untouched_count,
+    :loc
   )
 
-  def initialize(user:, user_pr_counts: nil, actionable_count:, untouched_count:)
+  def initialize(user:, user_pr_counts: nil, loc: nil, actionable_count:, untouched_count:)
     @username = user
     @user_pr_counts = user_pr_counts
     @actionable_count = actionable_count
     @untouched_count = untouched_count
+    @loc = loc
   end
 
   def authored_count
@@ -27,5 +29,17 @@ class PrUser
 
   def total_count
     authored_count + reviewing_count
+  end
+
+  def total_loc
+    return Hash.new { 0 } if loc.nil?
+
+    loc[:total]
+  end
+
+  def actionable_loc
+    return Hash.new { 0 } if loc.nil?
+
+    loc[:actionable]
   end
 end

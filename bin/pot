@@ -132,6 +132,22 @@ def untouched_per_author
   @untouched_per_author ||= Hash.new { 0 }
 end
 
+def loc_per_user
+  @loc_per_user ||= Hash.new do |hash, key|
+    hash[key] =
+      {
+        total: {
+          additions: 0,
+          deletions: 0
+        },
+        actionable: {
+          additions: 0,
+          deletions: 0
+        }
+      }
+  end
+end
+
 OptionParser.new do |opts|
   opts.banner = 'GAT=<your_github_access_token> [--users=some,user,names] [--user=user_name]'
 
@@ -252,7 +268,13 @@ def user_pr_counts
     # Increment actionable counts
     if pr.author_actionable?
       actionables_per_author[pr.author] += 1
+
+      loc_per_user[pr.author][:actionable][:additions] += pr.additions
+      loc_per_user[pr.author][:actionable][:deletions] += pr.deletions
     end
+
+    loc_per_user[pr.author][:total][:additions] += pr.additions
+    loc_per_user[pr.author][:total][:deletions] += pr.deletions
 
     pr.requested_reviewers.each do |requested_reviewer|
       actionables_per_author[requested_reviewer] += 1
@@ -260,6 +282,9 @@ def user_pr_counts
       if pr.untouched_by(requested_reviewer)
         untouched_per_author[requested_reviewer] += 1
       end
+
+      loc_per_user[requested_reviewer][:actionable][:additions] += pr.additions
+      loc_per_user[requested_reviewer][:actionable][:deletions] += pr.deletions
     end
     ##
 
@@ -272,6 +297,9 @@ def user_pr_counts
 
     pr.active_reviewers.each do |active_reviewer|
       @user_pr_counts[active_reviewer][:active_reviewer] += 1
+
+      loc_per_user[active_reviewer][:total][:additions] += pr.additions
+      loc_per_user[active_reviewer][:total][:deletions] += pr.deletions
     end
   end
 
@@ -285,7 +313,9 @@ def table_print
       'Authored',
       'Reviewing',
       'Total',
+      ' Total + / - ',
       'Actionable PRs',
+      'Actionable  + / -',
       'Untouched PRs'
     ].join(' | ')
   ]
@@ -294,6 +324,7 @@ def table_print
 
   pr_users = PrUserCollection.pr_users(
     user_pr_counts: user_pr_counts,
+    loc_per_user: loc_per_user,
     options: options,
     actionables_per_author: actionables_per_author,
     untouched_per_author: untouched_per_author,
@@ -314,13 +345,29 @@ def table_print
     end.
     each do |user|
       if(user_included?(user.username))
+        total_header_size = ' Total + / -  | '.size
+        total_additions = user.total_loc[:additions].to_s.
+          rjust(total_header_size / 2)
+        total_deletions = user.total_loc[:deletions].to_s.
+          ljust(total_header_size / 2)
+        total_loc = "#{total_additions} / #{total_deletions}"
+
+        actionable_header_size = 'Actionable  + / -'.size
+        actionable_additions = user.actionable_loc[:additions].to_s.
+          rjust(actionable_header_size / 2)
+        actionable_deletions = user.actionable_loc[:deletions].to_s.
+          ljust(actionable_header_size / 2)
+        actionable_loc = "#{actionable_additions} / #{actionable_deletions}"
+
         output.push(
           [
             user.username.ljust(largest_author_name_size),
             user.authored_count.to_s.rjust('Authored | '.size),
             user.reviewing_count.to_s.rjust('Reviewing | '.size),
             user.total_count.to_s.rjust('Total | '.size),
-            user.actionable_count.to_s.rjust('Actionable PRs | '.size),
+            total_loc,
+            user.actionable_count.to_s.rjust('Actionable PRs'.size),
+            actionable_loc,
             user.untouched_count.to_s.rjust('Untouched PRs | '.size)
           ].join
         )
