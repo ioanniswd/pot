@@ -122,6 +122,6 @@ class Pr
       map { |reviewer, reviews| latest_review(reviewer, reviews)}.
       select { |review| review[:state] == 'APPROVED' }.
       map { |review| review[:reviewer] }.
-      reject { |reviewer| reviewer == author }
+      reject { |reviewer| (requested_reviewers + [author]).include?(reviewer) }
   end
 end
