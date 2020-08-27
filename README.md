@@ -6,6 +6,8 @@ A CLI to instantly get an overview of one or more repos' PRs, and decide which P
 
 `pot` stands for Pr Overview Tool
 
+Note: This is an ongoing project, and issues are frequently opened and closed. Refactorings and improvements are on the way. Check the [issues section](https://github.com/ioanniswd/pot/issues) for more info.
+
 # How it works
 
 `pot` creates accumulated data for users concerning one or more repositories, using
