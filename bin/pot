@@ -47,7 +47,7 @@ def main
     puts 'Authored:'
     puts '---------'
     puts 'Actionable | Approvals |     +/-     | PR'
-    aggregated_data.user_prs[:authored].
+    aggregated_data.specified_user_prs[:authored].
       sort { |user_pr| user_pr[:actionable] ? 0 : 1 }.
       each do |user_pr|
         state = user_pr[:actionable] ? 'Yes' : 'No'
@@ -72,7 +72,7 @@ def main
     puts 'Reviewing:'
     puts '----------'
     puts 'Actionable | Untouched | Author: Actionables | Approvals |     +/-     | PR'
-    aggregated_data.user_prs[:reviewing].
+    aggregated_data.specified_user_prs[:reviewing].
       # Putting actionable PRs first and then sorting by author actionables
       # count
       sort do |a, b|

@@ -39,8 +39,8 @@ class AggregatedData
     @pr_urls ||= []
   end
 
-  def user_prs
-    @user_prs ||= { authored: [], reviewing: [] }
+  def specified_user_prs
+    @specified_user_prs ||= { authored: [], reviewing: [] }
   end
 
   def actionables_count_per_author
@@ -57,7 +57,7 @@ class AggregatedData
 
       if pr.author == user
         actionable = pr.author_actionable?
-        user_prs[:authored] << {
+        specified_user_prs[:authored] << {
           title: "#{pr.title} (#{pr.url})",
           actionable: actionable,
           num_of_approvals: pr.num_of_approvals,
@@ -69,7 +69,7 @@ class AggregatedData
 
       if pr.active_reviewers.include?(user)
         actionable = pr.reviewer_actionable?(user: user)
-        user_prs[:reviewing] << {
+        specified_user_prs[:reviewing] << {
           title: "#{pr.title} (#{pr.url})",
           actionable: actionable,
           author: pr.author,
