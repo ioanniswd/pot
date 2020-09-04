@@ -57,40 +57,20 @@ class AggregatedData
 
       if pr.author == user
         actionable = pr.author_actionable?
-        specified_user_prs[:authored] << {
-          title: "#{pr.title} (#{pr.url})",
-          actionable: actionable,
-          num_of_approvals: pr.num_of_approvals,
-          num_of_reviewers: pr.num_of_reviewers,
-          additions: pr.additions,
-          deletions: pr.deletions
-        }
+        add_to_specified_user_prs(pr, actionable, :authored)
       end
 
       if pr.active_reviewers.include?(user)
         actionable = pr.reviewer_actionable?(user: user)
-        specified_user_prs[:reviewing] << {
-          title: "#{pr.title} (#{pr.url})",
-          actionable: actionable,
-          author: pr.author,
-          untouched: pr.untouched_by(user),
-          num_of_approvals: pr.num_of_approvals,
-          num_of_reviewers: pr.num_of_reviewers,
-          additions: pr.additions,
-          deletions: pr.deletions
-        }
+        add_to_specified_user_prs(pr, actionable, :reviewing)
       end
 
       # Increment actionable counts
       if pr.author_actionable?
         actionables_count_per_author[pr.author] += 1
-
-        loc_per_user[pr.author][:actionable][:additions] += pr.additions
-        loc_per_user[pr.author][:actionable][:deletions] += pr.deletions
       end
 
-      loc_per_user[pr.author][:total][:additions] += pr.additions
-      loc_per_user[pr.author][:total][:deletions] += pr.deletions
+      add_loc_for_author(pr)
 
       pr.requested_reviewers.each do |requested_reviewer|
         actionables_count_per_author[requested_reviewer] += 1
@@ -99,8 +79,7 @@ class AggregatedData
           untouched_count_per_author[requested_reviewer] += 1
         end
 
-        loc_per_user[requested_reviewer][:actionable][:additions] += pr.additions
-        loc_per_user[requested_reviewer][:actionable][:deletions] += pr.deletions
+        add_loc_for_requested_reviewer(pr, requested_reviewer)
       end
       ##
 
@@ -114,9 +93,55 @@ class AggregatedData
       pr.active_reviewers.each do |active_reviewer|
         @user_pr_counts[active_reviewer][:active_reviewer] += 1
 
-        loc_per_user[active_reviewer][:total][:additions] += pr.additions
-        loc_per_user[active_reviewer][:total][:deletions] += pr.deletions
+        add_loc_for_active_reviewer(pr, active_reviewer)
       end
     end
+  end
+
+  def add_to_specified_user_prs(pr, actionable, type)
+    case type
+    when :authored
+      specified_user_prs[:authored] << {
+        title: "#{pr.title} (#{pr.url})",
+        actionable: actionable,
+        num_of_approvals: pr.num_of_approvals,
+        num_of_reviewers: pr.num_of_reviewers,
+        additions: pr.additions,
+        deletions: pr.deletions
+      }
+    when :reviewing
+      specified_user_prs[:reviewing] << {
+        title: "#{pr.title} (#{pr.url})",
+        actionable: actionable,
+        author: pr.author,
+        untouched: pr.untouched_by(user),
+        num_of_approvals: pr.num_of_approvals,
+        num_of_reviewers: pr.num_of_reviewers,
+        additions: pr.additions,
+        deletions: pr.deletions
+      }
+    else
+      raise 'Unknown pr type'
+    end
+  end
+
+  def add_loc_for_author(pr)
+    if pr.author_actionable?
+      loc_per_user[pr.author][:actionable][:additions] += pr.additions
+      loc_per_user[pr.author][:actionable][:deletions] += pr.deletions
+    end
+
+    loc_per_user[pr.author][:total][:additions] += pr.additions
+    loc_per_user[pr.author][:total][:deletions] += pr.deletions
+  end
+
+  def add_loc_for_requested_reviewer(pr, requested_reviewer)
+    loc_per_user[requested_reviewer][:actionable][:additions] += pr.additions
+    loc_per_user[requested_reviewer][:actionable][:deletions] += pr.deletions
+  end
+
+  def add_loc_for_active_reviewer(pr, active_reviewer)
+    loc_per_user[active_reviewer][:total][:additions] += pr.additions
+    loc_per_user[active_reviewer][:total][:deletions] += pr.deletions
   end
 end
