@@ -6,6 +6,7 @@ require_relative '../lib/config'
 require_relative '../lib/pr'
 require_relative '../lib/services/github_client.rb'
 require_relative '../lib/pr_user_collection'
+require_relative '../lib/aggregated_data'
 
 def main
   if options[:config]
@@ -29,13 +30,10 @@ def main
       exit(1)
     end
 
-    # Trigger calculations
-    user_pr_counts
-
     if options[:actionable].nil?
-      puts pr_urls.map { |pr| pr[:url] }
+      puts aggregated_data.pr_urls.map { |pr| pr[:url] }
     else
-      pr_urls.each do |pr|
+      aggregated_data.pr_urls.each do |pr|
         puts pr[:url] if pr[:actionable] == options[:actionable]
       end
     end
@@ -49,7 +47,7 @@ def main
     puts 'Authored:'
     puts '---------'
     puts 'Actionable | Approvals |     +/-     | PR'
-    user_prs[:authored].
+    aggregated_data.user_prs[:authored].
       sort { |user_pr| user_pr[:actionable] ? 0 : 1 }.
       each do |user_pr|
         state = user_pr[:actionable] ? 'Yes' : 'No'
@@ -74,15 +72,15 @@ def main
     puts 'Reviewing:'
     puts '----------'
     puts 'Actionable | Untouched | Author: Actionables | Approvals |     +/-     | PR'
-    user_prs[:reviewing].
+    aggregated_data.user_prs[:reviewing].
       # Putting actionable PRs first and then sorting by author actionables
       # count
       sort do |a, b|
         actionable_score_a = a[:actionable] ? 0 : 1
         actionable_score_b = b[:actionable] ? 0 : 1
 
-        actionables_per_author_a = actionables_per_author[a[:author]]
-        actionables_per_author_b = actionables_per_author[b[:author]]
+        actionables_per_author_a = aggregated_data.actionables_per_author[a[:author]]
+        actionables_per_author_b = aggregated_data.actionables_per_author[b[:author]]
 
         [actionable_score_a, actionables_per_author_a] <=> [actionable_score_b, actionables_per_author_b]
       end.
@@ -93,7 +91,7 @@ def main
         untouched = user_pr[:untouched] ? 'Yes' : 'No'
         untouched = untouched.ljust('Untouched |'.size)
 
-        author_actionables = "#{user_pr[:author]}: #{actionables_per_author[user_pr[:author]]}"
+        author_actionables = "#{user_pr[:author]}: #{aggregated_data.actionables_per_author[user_pr[:author]]}"
         author_actionables = author_actionables.ljust('Author: Actionables |'.size)
 
         num_of_approvals = user_pr[:num_of_approvals].to_s.rjust('Approvals |'.size / 2 - 2)
@@ -112,40 +110,8 @@ def main
   end
 end
 
-def user_prs
-  @user_prs ||= { authored: [], reviewing: [] }
-end
-
-def pr_urls
-  @pr_urls ||= []
-end
-
 def options
   @options ||= {}
-end
-
-def actionables_per_author
-  @actionables_per_author ||= Hash.new { 0 }
-end
-
-def untouched_per_author
-  @untouched_per_author ||= Hash.new { 0 }
-end
-
-def loc_per_user
-  @loc_per_user ||= Hash.new do |hash, key|
-    hash[key] =
-      {
-        total: {
-          additions: 0,
-          deletions: 0
-        },
-        actionable: {
-          additions: 0,
-          deletions: 0
-        }
-      }
-  end
 end
 
 OptionParser.new do |opts|
@@ -231,79 +197,12 @@ def github_client
   GithubClient.new(options: options, config: config)
 end
 
-def user_pr_counts
-  return @user_pr_counts if !@user_pr_counts.nil?
-
-  @user_pr_counts = Hash.new { |hash, key| hash[key] = { author: 0, active_reviewer: 0 } }
-
-  prs.each do |pr|
-    actionable = nil
-
-    if pr.author == options[:user]
-      actionable = pr.author_actionable?
-      user_prs[:authored] << {
-        title: "#{pr.title} (#{pr.url})",
-        actionable: actionable,
-        num_of_approvals: pr.num_of_approvals,
-        num_of_reviewers: pr.num_of_reviewers,
-        additions: pr.additions,
-        deletions: pr.deletions
-      }
-    end
-
-    if pr.active_reviewers.include?(options[:user])
-      actionable = pr.reviewer_actionable?(user: options[:user])
-      user_prs[:reviewing] << {
-        title: "#{pr.title} (#{pr.url})",
-        actionable: actionable,
-        author: pr.author,
-        untouched: pr.untouched_by(options[:user]),
-        num_of_approvals: pr.num_of_approvals,
-        num_of_reviewers: pr.num_of_reviewers,
-        additions: pr.additions,
-        deletions: pr.deletions
-      }
-    end
-
-    # Increment actionable counts
-    if pr.author_actionable?
-      actionables_per_author[pr.author] += 1
-
-      loc_per_user[pr.author][:actionable][:additions] += pr.additions
-      loc_per_user[pr.author][:actionable][:deletions] += pr.deletions
-    end
-
-    loc_per_user[pr.author][:total][:additions] += pr.additions
-    loc_per_user[pr.author][:total][:deletions] += pr.deletions
-
-    pr.requested_reviewers.each do |requested_reviewer|
-      actionables_per_author[requested_reviewer] += 1
-
-      if pr.untouched_by(requested_reviewer)
-        untouched_per_author[requested_reviewer] += 1
-      end
-
-      loc_per_user[requested_reviewer][:actionable][:additions] += pr.additions
-      loc_per_user[requested_reviewer][:actionable][:deletions] += pr.deletions
-    end
-    ##
-
-    if options[:url_only] &&
-        (pr.active_reviewers.include?(options[:user]) || pr.author == options[:user])
-      pr_urls << { url: pr.url, actionable: actionable }
-    end
-
-    @user_pr_counts[pr.author][:author] += 1
-
-    pr.active_reviewers.each do |active_reviewer|
-      @user_pr_counts[active_reviewer][:active_reviewer] += 1
-
-      loc_per_user[active_reviewer][:total][:additions] += pr.additions
-      loc_per_user[active_reviewer][:total][:deletions] += pr.deletions
-    end
-  end
-
-  @user_pr_counts
+def aggregated_data
+  @aggregated_data ||= AggregatedData.new(
+    prs: prs,
+    user: options[:user],
+    url_only: options[:url_only]
+  )
 end
 
 def table_print
@@ -323,11 +222,7 @@ def table_print
   output.push('-' * output.first.size)
 
   pr_users = PrUserCollection.pr_users(
-    user_pr_counts: user_pr_counts,
-    loc_per_user: loc_per_user,
-    options: options,
-    actionables_per_author: actionables_per_author,
-    untouched_per_author: untouched_per_author,
+    aggregated_data: aggregated_data,
     users_to_include: users_to_include
   )
 
