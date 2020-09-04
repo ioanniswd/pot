@@ -31,8 +31,8 @@ class AggregatedData
     end
   end
 
-  def untouched_per_author
-    @untouched_per_author ||= Hash.new { 0 }
+  def untouched_count_per_author
+    @untouched_count_per_author ||= Hash.new { 0 }
   end
 
   def pr_urls
@@ -43,8 +43,8 @@ class AggregatedData
     @user_prs ||= { authored: [], reviewing: [] }
   end
 
-  def actionables_per_author
-    @actionables_per_author ||= Hash.new { 0 }
+  def actionables_count_per_author
+    @actionables_count_per_author ||= Hash.new { 0 }
   end
 
   private
@@ -83,7 +83,7 @@ class AggregatedData
 
       # Increment actionable counts
       if pr.author_actionable?
-        actionables_per_author[pr.author] += 1
+        actionables_count_per_author[pr.author] += 1
 
         loc_per_user[pr.author][:actionable][:additions] += pr.additions
         loc_per_user[pr.author][:actionable][:deletions] += pr.deletions
@@ -93,10 +93,10 @@ class AggregatedData
       loc_per_user[pr.author][:total][:deletions] += pr.deletions
 
       pr.requested_reviewers.each do |requested_reviewer|
-        actionables_per_author[requested_reviewer] += 1
+        actionables_count_per_author[requested_reviewer] += 1
 
         if pr.untouched_by(requested_reviewer)
-          untouched_per_author[requested_reviewer] += 1
+          untouched_count_per_author[requested_reviewer] += 1
         end
 
         loc_per_user[requested_reviewer][:actionable][:additions] += pr.additions

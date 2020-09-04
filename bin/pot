@@ -79,10 +79,10 @@ def main
         actionable_score_a = a[:actionable] ? 0 : 1
         actionable_score_b = b[:actionable] ? 0 : 1
 
-        actionables_per_author_a = aggregated_data.actionables_per_author[a[:author]]
-        actionables_per_author_b = aggregated_data.actionables_per_author[b[:author]]
+        actionables_count_per_author_a = aggregated_data.actionables_count_per_author[a[:author]]
+        actionables_count_per_author_b = aggregated_data.actionables_count_per_author[b[:author]]
 
-        [actionable_score_a, actionables_per_author_a] <=> [actionable_score_b, actionables_per_author_b]
+        [actionable_score_a, actionables_count_per_author_a] <=> [actionable_score_b, actionables_count_per_author_b]
       end.
       each do |user_pr|
         state = user_pr[:actionable] ? 'Yes' : 'No'
@@ -91,7 +91,7 @@ def main
         untouched = user_pr[:untouched] ? 'Yes' : 'No'
         untouched = untouched.ljust('Untouched |'.size)
 
-        author_actionables = "#{user_pr[:author]}: #{aggregated_data.actionables_per_author[user_pr[:author]]}"
+        author_actionables = "#{user_pr[:author]}: #{aggregated_data.actionables_count_per_author[user_pr[:author]]}"
         author_actionables = author_actionables.ljust('Author: Actionables |'.size)
 
         num_of_approvals = user_pr[:num_of_approvals].to_s.rjust('Approvals |'.size / 2 - 2)
