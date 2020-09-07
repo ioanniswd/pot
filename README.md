@@ -49,11 +49,11 @@ simplicity.
 ```sh
 $ pot --users=john,jane,doe
 
-User                  | Authored | Reviewing | Total |  Total + / -  | Actionables | Actionable + / - | Untouched
------------------------------------------------------------------------------------------------------------------
-doe                            3           0       3      146 / 82               1         40 / 37              0
-jane                           1           2       3      270 / 254              2        200 / 187             0
-john                           2           1       3       34 / 48               3         34 / 48              0
+User | Authored | Reviewing | Total |  Total + / -  | Actionables | Actionable + / - | Untouched
+------------------------------------------------------------------------------------------------
+doe           3           0       3      146 / 82               1         40 / 37              0
+jane          1           2       3      270 / 254              2        200 / 187             0
+john          2           1       3       34 / 48               3         34 / 48              0
 ```
 
 Note: By default, `pot` only counts open PRs.
@@ -103,9 +103,9 @@ will want more details about a specific user's PRs. In that case the
 ```sh
 $ pot --user=doe
 
-User                  | Authored | Reviewing | Total |  Total + / -  | Actionables | Actionable + / - | Untouched
------------------------------------------------------------------------------------------------------------------
-doe                            2           3       5    5287 / 2095              3       5270 / 2035            1
+User | Authored | Reviewing | Total |  Total + / -  | Actionables | Actionable + / - | Untouched
+------------------------------------------------------------------------------------------------
+doe           2           3       5    5287 / 2095              3       5270 / 2035            1
 
 Authored:
 ---------
