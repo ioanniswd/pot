@@ -187,6 +187,13 @@ OptionParser.new do |opts|
     options[:registered] = true
     options[:registered_name] = value
   end
+
+  opts.on(
+    '--cached',
+    'Uses the already cached data from the previous request to speed up the response'
+  ) do |value|
+    options[:cached] = true
+  end
 end.parse!
 
 def prs
