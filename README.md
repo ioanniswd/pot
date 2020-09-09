@@ -18,9 +18,7 @@ github's graphql api.
 ```sh
 $ git clone https://github.com/ioanniswd/pot
 $ cd pot
-
-$ gem build pot.gemspec
-$ gem install --local pot
+$ ./install.sh # Installed as a gem
 ```
 
 # Usage
