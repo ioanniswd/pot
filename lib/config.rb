@@ -69,6 +69,10 @@ class Config
     @cache_enabled = !!config['cache_enabled']
   end
 
+  def config_folder_path
+    CONFIG_FOLDER_PATH
+  end
+
   private
 
   def save_config

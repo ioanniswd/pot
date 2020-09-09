@@ -18,6 +18,8 @@ class GithubClient
 
   # Returns an array of hashes, each hash containing information on a pr
   def prs
+    return cached_response if options[:cached] && cached_response
+
     _prs = []
 
     if repository_names.nil? || repository_names == ''
@@ -40,6 +42,8 @@ class GithubClient
         last_cursor = _prs.last&.dig('cursor')&.gsub(/=*$/, '')
       end
     end
+
+    write_cached_response(_prs) if config.cache_enabled?
 
     _prs
   end
@@ -78,6 +82,10 @@ class GithubClient
 
   private
 
+  def cached_response
+    cached_responses_full[cached_response_key]
+  end
+
   def github_url
     options[:github_url] || config.github_url
   end
@@ -107,5 +115,31 @@ class GithubClient
     end
 
     @uri = URI.join(@uri.to_s, 'api/graphql')
+  end
+
+  def write_cached_response(data)
+    cached_responses_full[cached_response_key] = data
+
+    File.write(cached_response_file_path, JSON.dump(cached_responses_full))
+  end
+
+  def cached_responses_full
+    @cached_responses_full ||=
+      if File.exists?(cached_response_file_path)
+        JSON.parse(File.read(cached_response_file_path))
+      else
+        {}
+      end
+  end
+
+  def cached_response_key
+    @cached_response_key ||=
+      options[:repository_names].
+      split(',').map(&:strip).
+      sort.join(', ')
+  end
+
+  def cached_response_file_path
+    config.config_folder_path + '/cached_response'
   end
 end
