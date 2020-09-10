@@ -55,22 +55,14 @@ class Printer
     pr_users.
       each do |user|
         if(user_included?(user.username))
-          total_additions = user.total_loc[:additions]
-          total_deletions = user.total_loc[:deletions]
-          total_loc = "#{total_additions} / #{total_deletions}"
-
-          actionable_additions = user.actionable_loc[:additions]
-          actionable_deletions = user.actionable_loc[:deletions]
-          actionable_loc = "#{actionable_additions} / #{actionable_deletions}"
-
           table.add_row([
             user.username,
             user.authored_count,
             user.reviewing_count,
             user.total_count.to_s,
-            total_loc,
+            "#{user.total_additions_loc} / #{user.total_deletions_loc}",
             user.actionable_count,
-            actionable_loc,
+            "#{user.actionable_additions_loc} / #{user.actionable_deletions_loc}",
             user.untouched_count
           ])
         end
