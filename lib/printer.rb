@@ -1,12 +1,13 @@
 require 'terminal-table'
 require_relative 'pr_user_collection'
+require_relative 'aggregated_data'
 
 class Printer
   attr_reader(
     :options
   )
 
-  def initialize(options:, aggregated_data: )
+  def initialize(options: )
     @options = options
   end
 
@@ -210,5 +211,9 @@ class Printer
       [actionable_score_a, actionables_count_per_author_a] <=>
       [actionable_score_b, actionables_count_per_author_b]
     end
+  end
+
+  def aggregated_data
+    @aggregated_data ||= AggregatedData.new(options: options)
   end
 end

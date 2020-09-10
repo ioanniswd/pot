@@ -3,7 +3,6 @@
 require 'optparse'
 
 require_relative '../lib/config'
-require_relative '../lib/aggregated_data'
 require_relative '../lib/printer'
 
 def main
@@ -111,10 +110,6 @@ OptionParser.new do |opts|
   end
 end.parse!
 
-def aggregated_data
-  @aggregated_data ||= AggregatedData.new(options: options)
-end
-
 def config
   @config ||= Config.new(options: options)
 end
@@ -136,11 +131,7 @@ def registered_config
 end
 
 def printer
-  @printer ||=
-    Printer.new(
-      options: options,
-      aggregated_data: aggregated_data
-    )
+  @printer ||= Printer.new(options: options)
 end
 
 main
