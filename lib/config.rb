@@ -51,7 +51,7 @@ class Config
     all_registered_configs[register_name] = {}
 
     options.keys.each do |key|
-      next if [:register_new, :registered_name, :registered].include?(key)
+      next if [:register_new, :registered_name, :registered, :cached].include?(key)
 
       all_registered_configs[register_name][key.to_s] = options[key]
     end
