@@ -7,6 +7,7 @@ require_relative '../lib/pr'
 require_relative '../lib/services/github_client.rb'
 require_relative '../lib/pr_user_collection'
 require_relative '../lib/aggregated_data'
+require 'terminal-table'
 
 def main
   if options[:config]
@@ -44,34 +45,53 @@ def main
   puts table_print
 
   if options[:user]
-    puts 'Authored:'
-    puts '---------'
-    puts 'Actionable | Approvals |     +/-     | PR'
+    table = Terminal::Table.new(
+      title: 'Authored',
+      headings: [
+        'Actionable',
+        'Approvals',
+        '+/-',
+        'PR'
+      ]
+    )
+
     aggregated_data.specified_user_prs[:authored].
       sort { |user_pr| user_pr[:actionable] ? 0 : 1 }.
       each do |user_pr|
-        state = user_pr[:actionable] ? 'Yes' : 'No'
-        state = state.ljust('Actionable |'.size)
-
-        num_of_approvals = user_pr[:num_of_approvals].to_s.rjust('Approvals |'.size / 2 - 2)
-        num_of_reviewers = user_pr[:num_of_reviewers].to_s.ljust('Approvals |'.size / 2)
+        num_of_approvals = user_pr[:num_of_approvals]
+        num_of_reviewers = user_pr[:num_of_reviewers]
 
         approved_to_num_of_reviewers = "#{num_of_approvals} / #{num_of_reviewers}"
 
-        additions = user_pr[:additions].to_s.rjust('   +/-     |'.size / 2 - 2)
-        deletions = user_pr[:deletions].to_s.ljust('   +/-     |'.size / 2)
+        additions = user_pr[:additions]
+        deletions = user_pr[:deletions]
 
         changes_ratio = "#{additions} / #{deletions}"
 
-        puts "#{state} #{approved_to_num_of_reviewers} #{changes_ratio}" \
-          " #{user_pr[:title]}"
+        table.add_row( [
+          user_pr[:actionable] ? 'Yes' : 'No',
+          approved_to_num_of_reviewers,
+          changes_ratio,
+          user_pr[:title]
+        ])
       end
+
+    puts table
 
     puts
 
-    puts 'Reviewing:'
-    puts '----------'
-    puts 'Actionable | Untouched | Author: Actionables | Approvals |     +/-     | PR'
+    table = Terminal::Table.new(
+      title: 'Reviewing',
+      headings: [
+        'Actionable',
+        'Untouched',
+        'Author: Actionables',
+        'Approvals',
+        '+/-',
+        'PR'
+      ]
+    )
+
     aggregated_data.specified_user_prs[:reviewing].
       # Putting actionable PRs first and then sorting by author actionables
       # count
@@ -85,28 +105,29 @@ def main
         [actionable_score_a, actionables_count_per_author_a] <=> [actionable_score_b, actionables_count_per_author_b]
       end.
       each do |user_pr|
-        state = user_pr[:actionable] ? 'Yes' : 'No'
-        state = state.ljust('Actionable |'.size)
-
-        untouched = user_pr[:untouched] ? 'Yes' : 'No'
-        untouched = untouched.ljust('Untouched |'.size)
-
         author_actionables = "#{user_pr[:author]}: #{aggregated_data.actionables_count_per_author[user_pr[:author]]}"
-        author_actionables = author_actionables.ljust('Author: Actionables |'.size)
 
-        num_of_approvals = user_pr[:num_of_approvals].to_s.rjust('Approvals |'.size / 2 - 2)
-        num_of_reviewers = user_pr[:num_of_reviewers].to_s.ljust('Approvals |'.size / 2)
+        num_of_approvals = user_pr[:num_of_approvals]
+        num_of_reviewers = user_pr[:num_of_reviewers]
 
         approved_to_num_of_reviewers = "#{num_of_approvals} / #{num_of_reviewers}"
 
-        additions = user_pr[:additions].to_s.rjust('   +/-     |'.size / 2 - 2)
-        deletions = user_pr[:deletions].to_s.ljust('   +/-     |'.size / 2)
+        additions = user_pr[:additions]
+        deletions = user_pr[:deletions]
 
         changes_ratio = "#{additions} / #{deletions}"
 
-        puts "#{state} #{untouched} #{author_actionables} " \
-          "#{approved_to_num_of_reviewers} #{changes_ratio} #{user_pr[:title]}"
+        table.add_row( [
+          user_pr[:actionable] ? 'Yes' : 'No',
+          user_pr[:untouched] ? 'Yes' : 'No',
+          author_actionables,
+          approved_to_num_of_reviewers,
+          changes_ratio,
+          user_pr[:title]
+        ])
       end
+
+      puts table
   end
 end
 
@@ -213,9 +234,9 @@ def aggregated_data
 end
 
 def table_print
-  output = [
-    [
-      'User' + ' ' * (largest_author_name_size - 'User'.size),
+  table = Terminal::Table.new(
+    headings: [
+      'User',
       'Authored',
       'Reviewing',
       'Total',
@@ -223,10 +244,8 @@ def table_print
       'Actionables',
       'Actionable  + / -',
       'Untouched'
-    ].join(' | ')
-  ]
-
-  output.push('-' * output.first.size)
+    ]
+  )
 
   pr_users = PrUserCollection.pr_users(
     aggregated_data: aggregated_data,
@@ -247,36 +266,28 @@ def table_print
     end.
     each do |user|
       if(user_included?(user.username))
-        total_header_size = ' Total + / -  | '.size
-        total_additions = user.total_loc[:additions].to_s.
-          rjust(total_header_size / 2)
-        total_deletions = user.total_loc[:deletions].to_s.
-          ljust(total_header_size / 2)
+        total_additions = user.total_loc[:additions]
+        total_deletions = user.total_loc[:deletions]
         total_loc = "#{total_additions} / #{total_deletions}"
 
-        actionable_header_size = 'Actionable  + / -'.size
-        actionable_additions = user.actionable_loc[:additions].to_s.
-          rjust(actionable_header_size / 2)
-        actionable_deletions = user.actionable_loc[:deletions].to_s.
-          ljust(actionable_header_size / 2)
+        actionable_additions = user.actionable_loc[:additions]
+        actionable_deletions = user.actionable_loc[:deletions]
         actionable_loc = "#{actionable_additions} / #{actionable_deletions}"
 
-        output.push(
-          [
-            user.username.ljust(largest_author_name_size),
-            user.authored_count.to_s.rjust('Authored | '.size),
-            user.reviewing_count.to_s.rjust('Reviewing | '.size),
-            user.total_count.to_s.rjust('Total | '.size),
-            total_loc,
-            user.actionable_count.to_s.rjust('Actionables'.size),
-            actionable_loc,
-            user.untouched_count.to_s.rjust('Untouched | '.size)
-          ].join
-        )
+        table.add_row([
+          user.username,
+          user.authored_count,
+          user.reviewing_count,
+          user.total_count.to_s,
+          total_loc,
+          user.actionable_count,
+          actionable_loc,
+          user.untouched_count
+        ])
       end
     end
 
-  puts output.join("\n")
+  puts table
 
   nil
 end
