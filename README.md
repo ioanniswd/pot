@@ -147,7 +147,7 @@ $ pot --user=doe --url-only
 
 This way one can open all of `doe's` PRs in a browser like this:
 ```sh
-$ pot --user=doe | xargs -L1 xdg-open
+$ pot --user=doe --url-only | xargs -L1 xdg-open
 ```
 
 
