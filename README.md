@@ -227,7 +227,7 @@ $ pot --users=jane,doe --repository_names=octo,cat --cached
 ```
 
 Subsequent requests made with the repositories being `octo`, `octo,cat` or `cat, octo` and the `--cached` option will use the cached response from the previous requests.
-For example, the following command will **not** trigger a request:
+For example, the following commands will **not** trigger a request:
 
 ```sh
 $ pot --users=john --repository_names=octo,cat --cached
