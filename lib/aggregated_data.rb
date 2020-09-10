@@ -1,16 +1,19 @@
+require_relative 'services/github_client.rb'
+require_relative 'pr'
+
 class AggregatedData
   attr_reader(
-    :prs,
+    :options,
     :user,
     :url_only,
     :user_pr_counts
   )
 
   # Array<Pr> prs
-  def initialize(prs:, user:, url_only: )
-    @prs = prs
-    @user = user
-    @url_only = url_only
+  def initialize(options: )
+    @options = options
+    @user = options[:user]
+    @url_only = options[:url_only]
 
     populate
   end
@@ -143,5 +146,13 @@ class AggregatedData
   def add_loc_for_active_reviewer(pr, active_reviewer)
     loc_per_user[active_reviewer][:total][:additions] += pr.additions
     loc_per_user[active_reviewer][:total][:deletions] += pr.deletions
+  end
+
+  def prs
+    @prs ||= github_client.prs.map { |pr| Pr.new(pr) }
+  end
+
+  def github_client
+    GithubClient.new(options: options)
   end
 end

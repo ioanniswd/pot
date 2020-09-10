@@ -3,8 +3,6 @@
 require 'optparse'
 
 require_relative '../lib/config'
-require_relative '../lib/pr'
-require_relative '../lib/services/github_client.rb'
 require_relative '../lib/aggregated_data'
 require_relative '../lib/printer'
 
@@ -113,20 +111,8 @@ OptionParser.new do |opts|
   end
 end.parse!
 
-def prs
-  @prs ||= github_client.prs.map { |pr| Pr.new(pr) }
-end
-
-def github_client
-  GithubClient.new(options: options, config: config)
-end
-
 def aggregated_data
-  @aggregated_data ||= AggregatedData.new(
-    prs: prs,
-    user: options[:user],
-    url_only: options[:url_only]
-  )
+  @aggregated_data ||= AggregatedData.new(options: options)
 end
 
 def config
