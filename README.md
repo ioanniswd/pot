@@ -184,6 +184,70 @@ You can also override some of the underlying options saved in the registry:
 $ pot --registered <register_name> --repository_names 'some, other, repos'
 ```
 
+# Speeding up
+There is the option of caching raw data returned from github for future use,
+which significantly speeds up further responses. For example, running:
+
+```sh
+$ pot --users=john,jane,doe
+```
+
+And then, wanting to know more about a specific user through the detailed view:
+
+```sh
+$ pot --user=doe --cached
+```
+
+This way, for the second command, no request is made, the data is considered to
+be the same.
+
+To enable this feature, run the config wizard. If enabled, the raw data from
+the request(s) are stored in `pot_root_folder/cached_response` everytime the command
+sends a request to github. Results are cached under the repo names used
+in the command. If different repo names are used, the request is made and its
+response is **also** saved in the aforementioned file.
+
+e.g.
+
+Assume the cache was just enabled (`cache_enabled: true` in the config file).
+
+Note: The `--cached` option specifies that we want to use the cached response, if
+present. If not present, the request is made as if `--cached` was ommited.
+
+This **sends** the request and saves the raw response:
+
+```sh
+$ pot --users=jane,doe --repository_names=octo --cached
+```
+
+This **also sends** the request and saves the raw response under a different key:
+
+```sh
+$ pot --users=jane,doe --repository_names=octo,cat --cached
+```
+
+Subsequent requests made with the repositories being `octo`, `octo,cat` or `cat, octo` and the `--cached` option will use the cached response from the previous requests.
+For example, the following command will **not** trigger a request:
+
+```sh
+$ pot --users=john --repository_names=octo,cat --cached
+```
+```sh
+$ pot --users=jane --repository_names=cat,octo --cached
+```
+```sh
+$ pot --users=doe --repository_names=octo --cached
+```
+
+But this one will, since response for repo `cat` alone has not been received so
+far:
+```sh
+$ pot --users=doe --repository_names=cat --cached
+```
+
+Note: `--cached` is not saved when using `--register` [See `register`](#register)
+
+
 # Contributing
 
 1. Create an issue describing the purpose of the pull request unless there is one already

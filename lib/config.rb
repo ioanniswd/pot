@@ -28,6 +28,10 @@ class Config
     input = gets.strip
     @owner_name  = input if input.size > 0
 
+    print 'Would you like to cache data to speed up subsequent requests (with --cached) (y/n): '
+    input = gets.strip
+    @cache_enabled = input.downcase[0] == 'y' if input.size > 0
+
     save_config
   end
 
@@ -47,7 +51,7 @@ class Config
     all_registered_configs[register_name] = {}
 
     options.keys.each do |key|
-      next if [:register_new, :registered_name, :registered].include?(key)
+      next if [:register_new, :registered_name, :registered, :cached].include?(key)
 
       all_registered_configs[register_name][key.to_s] = options[key]
     end
@@ -59,6 +63,16 @@ class Config
     all_registered_configs[register_name]
   end
 
+  def cache_enabled?
+    return @cache_enabled if !@cache_enabled.nil?
+
+    @cache_enabled = !!config['cache_enabled']
+  end
+
+  def config_folder_path
+    CONFIG_FOLDER_PATH
+  end
+
   private
 
   def save_config
@@ -68,6 +82,7 @@ class Config
         github_url: github_url,
         repository_names: repository_names,
         owner_name: owner_name,
+        cache_enabled: cache_enabled?,
         registered: all_registered_configs
       })
     )
