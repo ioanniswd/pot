@@ -51,23 +51,7 @@ class Printer
       ]
     )
 
-    pr_users = PrUserCollection.pr_users(
-      aggregated_data: aggregated_data,
-      users_to_include: users_to_include
-    )
-
     pr_users.
-      sort do |a, b|
-        [
-          a.total_count,
-          a.actionable_count,
-          a.untouched_count
-        ] <=> [
-          b.total_count,
-          b.actionable_count,
-          b.untouched_count
-        ]
-      end.
       each do |user|
         if(user_included?(user.username))
           total_additions = user.total_loc[:additions]
@@ -91,97 +75,93 @@ class Printer
         end
       end
 
-      puts table
-
-      nil
+    puts table
   end
 
   def print_user_specific
     if options[:user]
-      table = Terminal::Table.new(
-        title: 'Authored',
-        headings: [
-          'Actionable',
-          'Approvals',
-          '+/-',
-          'PR'
-        ]
-      )
-
-      aggregated_data.specified_user_prs[:authored].
-        sort { |user_pr| user_pr[:actionable] ? 0 : 1 }.
-        each do |user_pr|
-          num_of_approvals = user_pr[:num_of_approvals]
-          num_of_reviewers = user_pr[:num_of_reviewers]
-
-          approved_to_num_of_reviewers = "#{num_of_approvals} / #{num_of_reviewers}"
-
-          additions = user_pr[:additions]
-          deletions = user_pr[:deletions]
-
-          changes_ratio = "#{additions} / #{deletions}"
-
-          table.add_row( [
-            user_pr[:actionable] ? 'Yes' : 'No',
-            approved_to_num_of_reviewers,
-            changes_ratio,
-            user_pr[:title]
-          ])
-        end
-
-      puts table
+      print_authored_prs
 
       puts
 
-      table = Terminal::Table.new(
-        title: 'Reviewing',
-        headings: [
-          'Actionable',
-          'Untouched',
-          'Author: Actionables',
-          'Approvals',
-          '+/-',
-          'PR'
-        ]
-      )
-
-      aggregated_data.specified_user_prs[:reviewing].
-        # Putting actionable PRs first and then sorting by author actionables
-        # count
-        sort do |a, b|
-          actionable_score_a = a[:actionable] ? 0 : 1
-          actionable_score_b = b[:actionable] ? 0 : 1
-
-          actionables_count_per_author_a = aggregated_data.actionables_count_per_author[a[:author]]
-          actionables_count_per_author_b = aggregated_data.actionables_count_per_author[b[:author]]
-
-          [actionable_score_a, actionables_count_per_author_a] <=> [actionable_score_b, actionables_count_per_author_b]
-        end.
-        each do |user_pr|
-          author_actionables = "#{user_pr[:author]}: #{aggregated_data.actionables_count_per_author[user_pr[:author]]}"
-
-          num_of_approvals = user_pr[:num_of_approvals]
-          num_of_reviewers = user_pr[:num_of_reviewers]
-
-          approved_to_num_of_reviewers = "#{num_of_approvals} / #{num_of_reviewers}"
-
-          additions = user_pr[:additions]
-          deletions = user_pr[:deletions]
-
-          changes_ratio = "#{additions} / #{deletions}"
-
-          table.add_row( [
-            user_pr[:actionable] ? 'Yes' : 'No',
-            user_pr[:untouched] ? 'Yes' : 'No',
-            author_actionables,
-            approved_to_num_of_reviewers,
-            changes_ratio,
-            user_pr[:title]
-          ])
-        end
-
-        puts table
+      print_reviewing_prs
     end
+  end
+
+  def print_authored_prs
+    table = Terminal::Table.new(
+      title: 'Authored',
+      headings: [
+        'Actionable',
+        'Approvals',
+        '+/-',
+        'PR'
+      ]
+    )
+
+    aggregated_data.specified_user_prs[:authored].
+      sort { |user_pr| user_pr[:actionable] ? 0 : 1 }.
+      each do |user_pr|
+        num_of_approvals = user_pr[:num_of_approvals]
+        num_of_reviewers = user_pr[:num_of_reviewers]
+
+        approved_to_num_of_reviewers = "#{num_of_approvals} / #{num_of_reviewers}"
+
+        additions = user_pr[:additions]
+        deletions = user_pr[:deletions]
+
+        changes_ratio = "#{additions} / #{deletions}"
+
+        table.add_row( [
+          user_pr[:actionable] ? 'Yes' : 'No',
+          approved_to_num_of_reviewers,
+          changes_ratio,
+          user_pr[:title]
+        ])
+      end
+
+    puts table
+  end
+
+  def print_reviewing_prs
+    table = Terminal::Table.new(
+      title: 'Reviewing',
+      headings: [
+        'Actionable',
+        'Untouched',
+        'Author: Actionables',
+        'Approvals',
+        '+/-',
+        'PR'
+      ]
+    )
+
+    aggregated_data.specified_user_prs[:reviewing].
+      sort(&specified_user_reviewing_prs_sorting_criteria).
+      each do |user_pr|
+        author_actionables = "#{user_pr[:author]}: #{aggregated_data.actionables_count_per_author[user_pr[:author]]}"
+
+        num_of_approvals = user_pr[:num_of_approvals]
+        num_of_reviewers = user_pr[:num_of_reviewers]
+
+        approved_to_num_of_reviewers = "#{num_of_approvals} / #{num_of_reviewers}"
+
+        additions = user_pr[:additions]
+        deletions = user_pr[:deletions]
+
+        changes_ratio = "#{additions} / #{deletions}"
+
+        table.add_row( [
+          user_pr[:actionable] ? 'Yes' : 'No',
+          user_pr[:untouched] ? 'Yes' : 'No',
+          author_actionables,
+          approved_to_num_of_reviewers,
+          changes_ratio,
+          user_pr[:title]
+        ])
+      end
+
+    puts table
   end
 
   def user_included?(user)
@@ -194,5 +174,41 @@ class Printer
     users = options[:users].split(',') || []
 
     @users_to_include = users.push(options[:user]).compact
+  end
+
+  def pr_users
+    @pr_users ||= PrUserCollection.pr_users(
+      aggregated_data: aggregated_data,
+      users_to_include: users_to_include
+    ).sort(&pr_users_sorting_criteria)
+  end
+
+  def pr_users_sorting_criteria
+    proc do |a, b|
+      [
+        a.total_count,
+        a.actionable_count,
+        a.untouched_count
+      ] <=> [
+        b.total_count,
+        b.actionable_count,
+        b.untouched_count
+      ]
+    end
+  end
+
+  def specified_user_reviewing_prs_sorting_criteria
+    # Putting actionable PRs first and then sorting by author actionables
+    # count
+    proc do |a, b|
+      actionable_score_a = a[:actionable] ? 0 : 1
+      actionable_score_b = b[:actionable] ? 0 : 1
+
+      actionables_count_per_author_a = aggregated_data.actionables_count_per_author[a[:author]]
+      actionables_count_per_author_b = aggregated_data.actionables_count_per_author[b[:author]]
+
+      [actionable_score_a, actionables_count_per_author_a] <=>
+      [actionable_score_b, actionables_count_per_author_b]
+    end
   end
 end
