@@ -14,7 +14,7 @@ class Printer
   def print
     if options[:url_only]
       if options[:user].nil?
-        puts 'Option "url_only" can be only be used with --user=<the_user>'
+        puts 'Option "url_only" can only be used with --user=<the_user>'
         exit(1)
       end
 
