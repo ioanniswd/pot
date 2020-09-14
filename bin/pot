@@ -45,8 +45,6 @@ OptionParser.new do |opts|
 
   opts.on('--url-only', 'Outputs only the urls of the PRs authored and the PRs to be reviewed') do
     options[:url_only] = true
-
-    exit(1) if options[:user].nil?
   end
 
   opts.on('--actionable=actionable', 'Whether to list actionable/non-actionable PR urls (true/false)') do |value|
@@ -56,8 +54,6 @@ OptionParser.new do |opts|
     end
 
     options[:actionable] = value == 'true'
-
-    exit(1) if options[:url_only].nil?
   end
 
   opts.on(
