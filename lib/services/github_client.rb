@@ -7,13 +7,11 @@ require_relative '../config'
 
 class GithubClient
   attr_reader(
-    :options,
-    :config
+    :options
   )
 
-  def initialize(options:, config:)
+  def initialize(options: )
     @options = options
-    @config = config
   end
 
   # Returns an array of hashes, each hash containing information on a pr
