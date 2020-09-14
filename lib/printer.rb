@@ -95,15 +95,8 @@ class Printer
     aggregated_data.specified_user_prs[:authored].
       sort { |user_pr| user_pr[:actionable] ? 0 : 1 }.
       each do |user_pr|
-        num_of_approvals = user_pr[:num_of_approvals]
-        num_of_reviewers = user_pr[:num_of_reviewers]
-
-        approved_to_num_of_reviewers = "#{num_of_approvals} / #{num_of_reviewers}"
-
-        additions = user_pr[:additions]
-        deletions = user_pr[:deletions]
-
-        changes_ratio = "#{additions} / #{deletions}"
+        approved_to_num_of_reviewers = "#{user_pr[:num_of_approvals]} / #{user_pr[:num_of_reviewers]}"
+        changes_ratio = "#{user_pr[:additions]} / #{user_pr[:deletions]}"
 
         table.add_row( [
           user_pr[:actionable] ? 'Yes' : 'No',
@@ -133,16 +126,8 @@ class Printer
       sort(&specified_user_reviewing_prs_sorting_criteria).
       each do |user_pr|
         author_actionables = "#{user_pr[:author]}: #{aggregated_data.actionables_count_per_author[user_pr[:author]]}"
-
-        num_of_approvals = user_pr[:num_of_approvals]
-        num_of_reviewers = user_pr[:num_of_reviewers]
-
-        approved_to_num_of_reviewers = "#{num_of_approvals} / #{num_of_reviewers}"
-
-        additions = user_pr[:additions]
-        deletions = user_pr[:deletions]
-
-        changes_ratio = "#{additions} / #{deletions}"
+        approved_to_num_of_reviewers = "#{user_pr[:num_of_approvals]} / #{user_pr[:num_of_reviewers]}"
+        changes_ratio = "#{user_pr[:additions]} / #{user_pr[:deletions]}"
 
         table.add_row( [
           user_pr[:actionable] ? 'Yes' : 'No',
