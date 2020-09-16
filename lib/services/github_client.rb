@@ -132,8 +132,7 @@ class GithubClient
 
   def cached_response_key
     @cached_response_key ||=
-      options[:repository_names].
-      split(',').map(&:strip).
+      repository_names.
       sort.join(', ')
   end
 
