@@ -149,7 +149,7 @@ class Printer
   def users_to_include
     return @users_to_include if @users_to_include
 
-    users = options[:users].split(',') || []
+    users = options[:users]&.split(',') || []
 
     @users_to_include = users.push(options[:user]).compact
   end
