@@ -1,6 +1,6 @@
 # pot
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 A CLI to instantly get an overview of one or more repos' PRs, and decide which PR to act upon next.
@@ -281,6 +281,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <table>
   <tr>
     <td align="center"><a href="https://iridakos.com"><img src="https://avatars3.githubusercontent.com/u/9477868?v=4" width="100px;" alt=""/><br /><sub><b>Lazarus Lazaridis</b></sub></a><br /><a href="#ideas-iridakos" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/sntokos"><img src="https://avatars2.githubusercontent.com/u/56229533?v=4" width="100px;" alt=""/><br /><sub><b>Stefanos Ntokos</b></sub></a><br /><a href="#ideas-sntokos" title="Ideas, Planning, & Feedback">🤔</a></td>
   </tr>
 </table>
 
