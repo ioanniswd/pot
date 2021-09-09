@@ -50,6 +50,10 @@ class AggregatedData
     @actionables_count_per_author ||= Hash.new { 0 }
   end
 
+  def relevant_users_according_to_specified_user
+    @relevant_users_according_to_specified_user ||= []
+  end
+
   private
 
   def populate
@@ -61,11 +65,13 @@ class AggregatedData
       if pr.author == user
         actionable = pr.author_actionable?
         add_to_specified_user_prs(pr, actionable, :authored)
+        relevant_users_according_to_specified_user.push(*pr.active_reviewers)
       end
 
       if pr.active_reviewers.include?(user)
         actionable = pr.reviewer_actionable?(user: user)
         add_to_specified_user_prs(pr, actionable, :reviewing)
+        relevant_users_according_to_specified_user.push(pr.author)
       end
 
       # Increment actionable counts
