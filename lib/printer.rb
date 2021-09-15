@@ -152,6 +152,11 @@ class Printer
     users = options[:users]&.split(',') || []
 
     @users_to_include = users.push(options[:user]).compact
+    @users_to_include.push(*aggregated_data.relevant_users_according_to_specified_user)
+
+    @users_to_include.uniq!
+
+    @users_to_include
   end
 
   def pr_users

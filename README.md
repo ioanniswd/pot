@@ -110,6 +110,7 @@ $ pot --user=doe
 | User | Authored | Reviewing | Total |  Total + / -  | Actionables | Actionable  + / - | Untouched |
 +------+----------+-----------+-------+---------------+-------------+-------------------+-----------+
 | doe  | 2        | 3         | 5     | 5287 / 2095   | 3           | 5270 / 2035       | 1         |
+| john | 3        | 2         | 5     | 5287 / 2095   | 1           | 5270 / 2035       | 1         |
 +------+----------+-----------+-------+---------------+-------------+-------------------+-----------+
 
 +------------+-----------+-------------+---------------------------+
@@ -141,7 +142,12 @@ And both the accumulative and the specific output will be shown
 In the above example, the accumulative data is shown for user `doe`, as well
 as some details about each of the PRs they are involved in. This can be used by
 `doe` to figure out which PR needs their attention first, or by another user
-who happened to have some idle time and wants to help out.
+who happened to have some idle time and wants to help out. Information about
+`john` appear as well, since john is the author of all the PRs that `doe` is
+reviewing, and is also reviewing all PRs that `doe` has authored. This allows
+one to simply pass the `--user` argument and get information on the status of all
+users with which they share any PRs, without explicitly passing a `--users`
+argument.
 
 #### Approvals
 The ratio of users who have approved the PR, to all users ever involved in the PR.
