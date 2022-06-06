@@ -57,14 +57,6 @@ OptionParser.new do |opts|
   end
 
   opts.on(
-    '--github_url=url',
-    '--github_url',
-    'The github url to use for the requests, defaults to github_url in config file'
-  ) do |value|
-    options[:github_url] = value
-  end
-
-  opts.on(
     '--owner_name=owner_name',
     '--owner_name',
     'The owner name to use in the requests, defaults to owner_name in config file'

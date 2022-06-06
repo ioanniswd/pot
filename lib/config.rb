@@ -16,10 +16,6 @@ class Config
       Dir.mkdir(CONFIG_FOLDER_PATH)
     end
 
-    print 'What is the organizations github url(e.g. github.<company>.com): '
-    input = gets.strip
-    @github_url = input if input.size > 0
-
     print 'Repository names (comma separated): '
     input = gets.strip
     @repository_names  = input if input.size > 0
@@ -33,10 +29,6 @@ class Config
     @cache_enabled = input.downcase[0] == 'y' if input.size > 0
 
     save_config
-  end
-
-  def github_url
-    @github_url ||= config["github_url"]
   end
 
   def repository_names
@@ -79,7 +71,6 @@ class Config
     File.write(
       CONFIG_FILE_PATH,
       JSON.pretty_generate({
-        github_url: github_url,
         repository_names: repository_names,
         owner_name: owner_name,
         cache_enabled: cache_enabled?,

@@ -85,7 +85,7 @@ class GithubClient
   end
 
   def github_url
-    options[:github_url] || config.github_url
+    'https://api.github.com/graphql'
   end
 
   def repository_names
@@ -97,22 +97,7 @@ class GithubClient
   end
 
   def uri
-    return @uri if @uri
-
-    if github_url.nil? || github_url == ''
-      puts 'Attribute github_url must be provided either through the config, or' \
-        ' through an option'
-
-      exit(1)
-    end
-
-    @uri = URI.parse(github_url)
-
-    if @uri.scheme.nil?
-      @uri = URI.parse("https://#{github_url}")
-    end
-
-    @uri = URI.join(@uri.to_s, 'api/graphql')
+    @uri ||= URI.parse(github_url)
   end
 
   def write_cached_response(data)
