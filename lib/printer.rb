@@ -54,9 +54,15 @@ class Printer
 
     pr_users.
       each do |user|
+        username = user.username
+
+        if options[:user] == user.username
+          username = "-- #{username} --"
+        end
+
         if(user_included?(user.username))
           table.add_row([
-            user.username,
+            username,
             user.authored_count,
             user.reviewing_count,
             user.total_count.to_s,
