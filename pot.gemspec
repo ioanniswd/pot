@@ -5,7 +5,7 @@ require 'pot/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "pot"
-  spec.version       = "1.1.1"
+  spec.version       = "1.2.1"
   spec.authors       = ["Giannis Poulis"]
   spec.email         = ["ioanniswd@gmail.com"]
 

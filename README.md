@@ -5,7 +5,7 @@
 
 A CLI to instantly get an overview of one or more repos' PRs, and decide which PR to act upon next.
 
-![Version badge](https://img.shields.io/badge/version-1.1.1-green.svg)
+![Version badge](https://img.shields.io/badge/version-1.2.1-green.svg)
 
 `pot` stands for Pr Overview Tool
 

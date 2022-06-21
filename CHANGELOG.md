@@ -1,3 +1,7 @@
+1.2.0 June, 21, 2022
+ - Use `github.com` url for requests by default. Removed config option for
+   enterprise URL.
+
 1.1.1 September, 16, 2020
  - Bug fix with defaults not being used properly
  - Bug fix when --users option not specified
