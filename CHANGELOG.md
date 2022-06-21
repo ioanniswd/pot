@@ -1,3 +1,6 @@
+1.2.1 June, 21, 2022
+ - Make specified user more visible in aggregated view.
+
 1.2.0 June, 21, 2022
  - Use `github.com` url for requests by default. Removed config option for
    enterprise URL.
