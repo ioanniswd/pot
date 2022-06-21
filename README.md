@@ -5,7 +5,7 @@
 
 A CLI to instantly get an overview of one or more repos' PRs, and decide which PR to act upon next.
 
-![Version badge](https://img.shields.io/badge/version-1.1.1-green.svg)
+![Version badge](https://img.shields.io/badge/version-1.2.1-green.svg)
 
 `pot` stands for Pr Overview Tool
 
@@ -178,7 +178,7 @@ Follow the wizard to define the github url, repository and owner names.
 You can provide all said config options as params, like so:
 
 ```sh
-$ pot --user=doe --repository_names "octo, cat" --owner_name 'repo_owner_name' --github_url 'github.<company_name>.com'
+$ pot --user=doe --repository_names "octo, cat" --owner_name 'repo_owner_name'
 
 ```
 
