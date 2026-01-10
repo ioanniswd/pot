@@ -14,7 +14,22 @@ Note: This is an ongoing project, and issues are frequently opened and closed. R
 # How it works
 
 `pot` creates accumulated data for users concerning one or more repositories, using
-github's graphql api.
+GitHub's API through the official GitHub CLI (`gh`). This provides improved reliability,
+automatic error handling, and built-in rate limit management.
+
+# Prerequisites
+
+Before installing `pot`, ensure you have the following:
+
+1. **GitHub CLI (`gh`)** - The official GitHub command-line tool
+   - Download from: https://cli.github.com
+   - After installation, authenticate with:
+     ```sh
+     gh auth login
+     ```
+   - Follow the interactive prompts to complete authentication
+
+2. **Ruby** - `pot` is a Ruby gem (typically Ruby 2.6+)
 
 # Installation
 
@@ -26,23 +41,40 @@ $ ./install.sh # Installed as a gem
 
 # Usage
 
-Note: Since github needs a personal access token, this token must be accessible
-to `pot`, like so for example:
+`pot` uses the GitHub CLI for authentication, which means your GitHub credentials
+are managed by `gh`.
+
+### Authentication
+
+First, ensure you've authenticated with GitHub CLI:
 
 ```sh
-$ GAT=<your_token> pot <options, etc>
+$ gh auth login
 ```
 
-Or better yet:
+Then simply use `pot` as normal:
 
 ```sh
-$ GAT=`cat pat/to/token/file` pot <options, etc>
+$ pot --users=john,jane,doe
 ```
 
-(GAT -> Github Access Token)
+### All-in-one Setup
 
-In the usage examples following, `GAT` assignment will not be prefixed for
-simplicity.
+For first-time users, here's the complete setup:
+
+```sh
+# 1. Install GitHub CLI (if not already installed)
+# Visit: https://cli.github.com
+
+# 2. Authenticate with GitHub
+$ gh auth login
+
+# 3. Configure pot (one-time setup)
+$ pot --config
+
+# 4. Use pot!
+$ pot --users=john,jane,doe
+```
 
 
 ## Multiple user overview
