@@ -51,7 +51,7 @@ def check_gh_installed
 end
 
 OptionParser.new do |opts|
-  opts.banner = 'GAT=<your_github_access_token> [--users=some,user,names] [--user=user_name]'
+  opts.banner = 'pot [--users=some,user,names] [--user=user_name] [options]'
 
   opts.on('--config', '--configure', 'Outputs only the urls of the PRs authored and the PRs to be reviewed') do
     options[:config] = true
