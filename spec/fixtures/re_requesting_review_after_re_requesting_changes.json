@@ -1,0 +1,53 @@
+[
+  {
+    "additions": 513,
+    "author": {
+      "id": "MDQ6VXNlcjE4MjEzNTEy",
+      "is_bot": false,
+      "login": "ioanniswd",
+      "name": "John Poulis"
+    },
+    "deletions": 58,
+    "number": 43,
+    "reviewRequests": [
+      {
+        "__typename": "User",
+        "login": "ioanniswd-bot"
+      }
+    ],
+    "reviews": [
+      {
+        "id": "PRR_kwDOD_0z0c7ZXeH1",
+        "author": {
+          "login": "ioanniswd-bot"
+        },
+        "authorAssociation": "COLLABORATOR",
+        "body": "bot-test: Make sure the active reviewers are correctly handled, especially after re-requesting a review after their approval.",
+        "submittedAt": "2026-01-10T13:01:51Z",
+        "includesCreatedEdit": false,
+        "reactionGroups": [],
+        "state": "CHANGES_REQUESTED",
+        "commit": {
+          "oid": "0e426056edb45a36b66377c3aacb4db6cb5403d1"
+        }
+      },
+      {
+        "id": "PRR_kwDOD_0z0c7ZXf1l",
+        "author": {
+          "login": "ioanniswd-bot"
+        },
+        "authorAssociation": "COLLABORATOR",
+        "body": "Re-requesting changes to simulate an ongoing PR and check gh pr list output",
+        "submittedAt": "2026-01-10T13:06:57Z",
+        "includesCreatedEdit": false,
+        "reactionGroups": [],
+        "state": "CHANGES_REQUESTED",
+        "commit": {
+          "oid": "0e426056edb45a36b66377c3aacb4db6cb5403d1"
+        }
+      }
+    ],
+    "title": "V2.0 use gh",
+    "url": "https://github.com/ioanniswd/pot/pull/43"
+  }
+]

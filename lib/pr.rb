@@ -2,7 +2,7 @@ class Pr
   attr_reader :hash
 
   def initialize(hash)
-    @hash = hash['node']
+    @hash = hash
   end
 
   def author
@@ -35,8 +35,8 @@ class Pr
 
   def requested_reviewers
     @requested_reviewers ||=
-      hash['reviewRequests']['edges'].map do |review|
-        review['node']['requestedReviewer']['login']
+      (hash['reviewRequests'] || []).map do |review_request|
+        review_request['login']
       end
   end
 
@@ -101,11 +101,11 @@ class Pr
   end
 
   def reviews
-    @reviews ||= hash['reviews']['edges'].map do |review|
+    @reviews ||= (hash['reviews'] || []).map do |review|
       {
-        author: review['node']['author']['login'],
-        state: review['node']['state'],
-        created_at: Date.strptime(review['node']['createdAt'], '%Y-%m-%d')
+        author: review['author']['login'],
+        state: review['state'],
+        created_at: Date.parse(review['submittedAt'])
       }
     end
   end

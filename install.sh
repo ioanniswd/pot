@@ -1,4 +1,4 @@
 #!/bin/bash
 gem build pot.gemspec
-gem install --local pot
-rm pot-1.2.1.gem
+gem install --local pot --user-install
+rm pot-2.0.0.gem

@@ -1,0 +1,22 @@
+[
+  {
+    "additions": 513,
+    "author": {
+      "id": "MDQ6VXNlcjE4MjEzNTEy",
+      "is_bot": false,
+      "login": "ioanniswd",
+      "name": "John Poulis"
+    },
+    "deletions": 58,
+    "number": 43,
+    "reviewRequests": [
+      {
+        "__typename": "User",
+        "login": "ioanniswd-bot"
+      }
+    ],
+    "reviews": [],
+    "title": "V2.0 use gh",
+    "url": "https://github.com/ioanniswd/pot/pull/43"
+  }
+]

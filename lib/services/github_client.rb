@@ -1,7 +1,6 @@
-require 'net/http'
-require 'uri'
 require 'json'
 require 'date'
+require 'open3'
 
 require_relative '../config'
 
@@ -12,9 +11,11 @@ class GithubClient
 
   def initialize(options: )
     @options = options
+    check_gh_installed
   end
 
-  # Returns an array of hashes, each hash containing information on a pr
+  # Returns an array of hashes from gh pr list, each hash containing PR data
+  # Format: [{ title, url, author, additions, deletions, reviews, reviewRequests, ... }, ...]
   def prs
     return cached_response if options[:cached] && cached_response
 
@@ -28,17 +29,8 @@ class GithubClient
     end
 
     repository_names.each do |repository_name|
-      has_next = true
-      last_cursor = nil
-
-      while has_next
-        response = next_request(last_cursor, repository_name)
-        has_next = response['pageInfo']['hasNextPage']
-
-        _prs += response['edges']
-
-        last_cursor = _prs.last&.dig('cursor')&.gsub(/=*$/, '')
-      end
+      gh_prs = fetch_prs_from_gh(repository_name)
+      _prs += gh_prs
     end
 
     write_cached_response(_prs) if config.cache_enabled?
@@ -48,14 +40,27 @@ class GithubClient
 
   private
 
-  def next_request(last_cursor, repository_name)
-    request = Net::HTTP::Post.new(uri)
-    request['Authorization'] = "bearer #{ENV['GAT']}"
+  def check_gh_installed
+    unless system('gh --version > /dev/null 2>&1')
+      puts <<~ERROR
+        ❌ Error: GitHub CLI (gh) is not installed or not accessible.
 
-    if last_cursor
-      after = ", after: \"#{last_cursor}\""
+        pot now requires the GitHub CLI to function properly. This improves
+        reliability and provides better error handling.
+
+        Please install GitHub CLI from: https://cli.github.com
+
+        After installation, you'll need to authenticate:
+          gh auth login
+
+        Then you can use pot as usual:
+          pot --users=john,jane --user=john
+      ERROR
+      exit(1)
     end
+  end
 
+  def fetch_prs_from_gh(repository_name)
     if owner_name.nil? || owner_name == ''
       puts 'Attribute owner_name must be provided either through the' \
         ' config, or through an option'
@@ -63,29 +68,29 @@ class GithubClient
       exit(1)
     end
 
-    request.body = JSON.dump({
-      'query' => "query { repository(owner: \"#{owner_name}\", name: \"#{repository_name}\") { pullRequests(first: 80, states: OPEN#{after}) { pageInfo { hasNextPage } edges { cursor node { additions deletions reviews(first: 80) { edges { node { author { login } state createdAt }  } } reviewRequests(first: 80) { edges { node { requestedReviewer { ... on User { login } } } } } url title author { login } participants(first: 80) { edges { node { login } } } } } } } }"
-    })
+    repo = "#{owner_name}/#{repository_name}"
 
-    req_options = {
-      use_ssl: uri.scheme == 'https'
-    }
+    # Specify all JSON fields we need, including nested review/reviewRequest data
+    json_fields = 'number,title,url,author,additions,deletions,reviews,reviewRequests'
 
-    response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
-      http.request(request)
+    cmd = "gh pr list --repo #{repo} --state open --json #{json_fields} --limit 100"
+
+    stdout, stderr, status = Open3.capture3(cmd)
+
+    unless status.success?
+      puts "Error fetching PRs for #{repo}:"
+      puts stderr
+      exit(1)
     end
 
-    JSON.parse(response.body)['data']['repository']['pullRequests']
+    JSON.parse(stdout)
+  rescue JSON::ParserError => e
+    puts "Error parsing gh output for #{repo}: #{e.message}"
+    exit(1)
   end
-
-  private
 
   def cached_response
     cached_responses_full[cached_response_key]
-  end
-
-  def github_url
-    'https://api.github.com/graphql'
   end
 
   def repository_names
@@ -94,10 +99,6 @@ class GithubClient
 
   def owner_name
     options[:owner_name] || config.owner_name
-  end
-
-  def uri
-    @uri ||= URI.parse(github_url)
   end
 
   def write_cached_response(data)

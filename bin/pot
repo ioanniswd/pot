@@ -6,6 +6,8 @@ require_relative '../lib/config'
 require_relative '../lib/printer'
 
 def main
+  check_gh_installed
+
   if options[:config]
     config.init
 
@@ -28,8 +30,28 @@ def options
   @options ||= {}
 end
 
+def check_gh_installed
+  unless system('gh --version > /dev/null 2>&1')
+    puts <<~ERROR
+      ❌ Error: GitHub CLI (gh) is not installed or not accessible.
+
+      pot now requires the GitHub CLI to function properly. This improves
+      reliability and provides better error handling.
+
+      Please install GitHub CLI from: https://cli.github.com
+
+      After installation, you'll need to authenticate:
+        gh auth login
+
+      Then you can use pot as usual:
+        pot --users=john,jane --user=john
+    ERROR
+    exit(1)
+  end
+end
+
 OptionParser.new do |opts|
-  opts.banner = 'GAT=<your_github_access_token> [--users=some,user,names] [--user=user_name]'
+  opts.banner = 'pot [--users=some,user,names] [--user=user_name] [options]'
 
   opts.on('--config', '--configure', 'Outputs only the urls of the PRs authored and the PRs to be reviewed') do
     options[:config] = true

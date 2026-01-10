@@ -5,7 +5,7 @@
 
 A CLI to instantly get an overview of one or more repos' PRs, and decide which PR to act upon next.
 
-![Version badge](https://img.shields.io/badge/version-1.2.1-green.svg)
+![Version badge](https://img.shields.io/badge/version-2.0.0-green.svg)
 
 `pot` stands for Pr Overview Tool
 
@@ -14,7 +14,31 @@ Note: This is an ongoing project, and issues are frequently opened and closed. R
 # How it works
 
 `pot` creates accumulated data for users concerning one or more repositories, using
-github's graphql api.
+GitHub's API through the official GitHub CLI (`gh`). This provides improved reliability,
+automatic error handling, and built-in rate limit management.
+
+# Prerequisites
+
+Before installing `pot`, ensure you have the following:
+
+1. **GitHub CLI (`gh`)** - The official GitHub command-line tool
+   - Download from: https://cli.github.com
+   - Minimum version: `gh` v2.0+ (to ensure all required JSON field options are available)
+   - After installation, verify it's working:
+     ```sh
+     gh --version
+     ```
+   - Authenticate with:
+     ```sh
+     gh auth login
+     ```
+   - Follow the interactive prompts to complete authentication
+   - Verify authentication with:
+     ```sh
+     gh auth status
+     ```
+
+2. **Ruby** - `pot` is a Ruby gem (typically Ruby 2.6+)
 
 # Installation
 
@@ -26,23 +50,40 @@ $ ./install.sh # Installed as a gem
 
 # Usage
 
-Note: Since github needs a personal access token, this token must be accessible
-to `pot`, like so for example:
+`pot` uses the GitHub CLI for authentication, which means your GitHub credentials
+are managed by `gh`.
+
+### Authentication
+
+First, ensure you've authenticated with GitHub CLI:
 
 ```sh
-$ GAT=<your_token> pot <options, etc>
+$ gh auth login
 ```
 
-Or better yet:
+Then simply use `pot` as normal:
 
 ```sh
-$ GAT=`cat pat/to/token/file` pot <options, etc>
+$ pot --users=john,jane,doe
 ```
 
-(GAT -> Github Access Token)
+### All-in-one Setup
 
-In the usage examples following, `GAT` assignment will not be prefixed for
-simplicity.
+For first-time users, here's the complete setup:
+
+```sh
+# 1. Install GitHub CLI (if not already installed)
+# Visit: https://cli.github.com
+
+# 2. Authenticate with GitHub
+$ gh auth login
+
+# 3. Configure pot (one-time setup)
+$ pot --config
+
+# 4. Use pot!
+$ pot --users=john,jane,doe
+```
 
 
 ## Multiple user overview
@@ -171,19 +212,46 @@ $ pot --user=doe --url-only | xargs -L1 xdg-open
 
 
 # Configuration
+
+## GitHub Authentication
+`pot` uses the GitHub CLI (`gh`) for authentication. Credentials are managed by `gh`, not by `pot`.
+
+To authenticate:
 ```sh
-$ pot --config
+$ gh auth login
 ```
-Follow the wizard to define the github url, repository and owner names.
-You can provide all said config options as params, like so:
+
+This step is **required** before using `pot`.
+
+## Repository Configuration
+
+You can provide repository information either via command-line options or by saving a default configuration.
+
+### Option 1: Command-line Options
+
+Provide options each time you run `pot`:
 
 ```sh
 $ pot --user=doe --repository_names "octo, cat" --owner_name 'repo_owner_name'
-
 ```
 
+### Option 2: Save Default Configuration
+
+To save frequently-used repository information:
+
+```sh
+$ pot --config
+```
+
+Follow the interactive wizard to define:
+- **Repository names** (comma-separated): Which repositories to analyze
+- **Owner name**: GitHub user or organization that owns the repositories
+- **Cache enabled**: Whether to cache PR data for faster subsequent runs
+
+The configuration is saved to `~/.pot/config` for future use.
+
 # Register
-In case command is usually being used with certain options, options can be saved
+In case a command is usually being used with certain options, options can be saved
 under a certain name like so:
 
 ```sh
@@ -266,6 +334,34 @@ $ pot --users=doe --repository_names=cat --cached
 
 Note: `--cached` is not saved when using `--register` [See `register`](#register)
 
+
+# Troubleshooting
+
+## GitHub CLI (`gh`) Not Found
+**Error:** `gh: command not found`
+
+**Solution:** Install the GitHub CLI from https://cli.github.com
+
+## Not Authenticated
+**Error:** `Error fetching PRs: authentication required`
+
+**Solution:** Run `gh auth login` and follow the interactive prompts to authenticate with GitHub
+
+## Permission Issues
+**Error:** `Error fetching PRs: insufficient permissions`
+
+**Solution:** Ensure your GitHub credentials have access to the repositories you're querying. Check your GitHub token permissions:
+```sh
+$ gh auth status
+```
+
+## Repository Not Found
+**Error:** `Error fetching PRs: repository not found`
+
+**Solution:** Verify that:
+1. The owner name and repository names are correct
+2. You have access to the repository
+3. The repository exists on GitHub
 
 # Contributing
 
