@@ -5,12 +5,12 @@ require 'pot/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "pot"
-  spec.version       = "1.2.1"
+  spec.version       = "2.0.0"
   spec.authors       = ["Giannis Poulis"]
   spec.email         = ["ioanniswd@gmail.com"]
 
   spec.summary       = %q{A tool to get an overview of current PRs to better distribute load amongst devs}
-  spec.description   = %q{`pot` creates accumulated data for users concerning one repository, using github's graphql api}
+  spec.description   = %q{`pot` creates accumulated data for users concerning one or more repositories, using the GitHub CLI (`gh`)}
   spec.homepage      = "https://github.com/ioanniswd/pot"
   spec.license       = "MIT"
 
