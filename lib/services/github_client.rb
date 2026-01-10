@@ -12,6 +12,7 @@ class GithubClient
 
   def initialize(options: )
     @options = options
+    check_gh_installed
   end
 
   # Returns an array of hashes, each hash containing information on a pr
@@ -47,6 +48,26 @@ class GithubClient
   end
 
   private
+
+  def check_gh_installed
+    unless system('gh --version > /dev/null 2>&1')
+      puts <<~ERROR
+        ❌ Error: GitHub CLI (gh) is not installed or not accessible.
+
+        pot now requires the GitHub CLI to function properly. This improves
+        reliability and provides better error handling.
+
+        Please install GitHub CLI from: https://cli.github.com
+
+        After installation, you'll need to authenticate:
+          gh auth login
+
+        Then you can use pot as usual:
+          pot --users=john,jane --user=john
+      ERROR
+      exit(1)
+    end
+  end
 
   def next_request(last_cursor, repository_name)
     request = Net::HTTP::Post.new(uri)
