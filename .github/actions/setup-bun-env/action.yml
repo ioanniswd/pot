@@ -1,0 +1,17 @@
+name: Setup Bun environment
+description: Installs Bun and project dependencies
+
+runs:
+  using: composite
+  steps:
+    - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6  # v2.2.0
+      with:
+        bun-version: latest
+
+    - name: Install go-task
+      shell: bash
+      run: sh -c "$(curl -L https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin
+
+    - name: Install dependencies
+      shell: bash
+      run: bun install --frozen-lockfile
