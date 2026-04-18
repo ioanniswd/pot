@@ -30,9 +30,6 @@ jobs:
           - target: bun-windows-x64
             os: windows-latest
             artifact: pot-windows-x64.exe
-          - target: bun-windows-arm64
-            os: windows-latest
-            artifact: pot-windows-arm64.exe
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6  # v2.2.0
@@ -68,5 +65,4 @@ jobs:
             dist/pot-linux-arm64 \
             dist/pot-darwin-x64 \
             dist/pot-darwin-arm64 \
-            dist/pot-windows-x64.exe \
-            dist/pot-windows-arm64.exe
+            dist/pot-windows-x64.exe

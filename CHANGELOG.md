@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Full rewrite in TypeScript with Bun as the runtime and package manager
-- Standalone binary releases for 6 platforms (linux/darwin/windows × x64/arm64) via `bun build --compile`
+- Standalone binary releases for 5 platforms (linux/darwin × x64/arm64, windows x64) via `bun build --compile`
 - `pot config` interactive setup wizard (replaces `--config` flag)
 - `--json` flag for raw JSON output — useful for scripting and `jq` pipelines
 - Named preset system: `--register-new=<name>` saves options, `--registered=<name>` restores them
