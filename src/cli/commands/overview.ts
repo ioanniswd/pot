@@ -1,4 +1,5 @@
 import { defineCommand } from 'clerc';
+import packageJson from '../../../package.json' with { type: 'json' };
 import { readConfig, requireConfig, savePreset } from '../../config.js';
 import { aggregate } from '../../services/aggregator.js';
 import { checkGhAuth, fetchPrs } from '../../services/github.js';
@@ -9,10 +10,26 @@ import {
   formatReviewingTable,
 } from '../format.js';
 
+const repoBase = packageJson.repository.url
+  .replace(/^git\+/, '')
+  .replace(/\.git$/, '');
+
+const SKILL_URL = `${repoBase}/blob/master/.claude/skills/pot/SKILL.md`;
+const README_URL = `${repoBase}/blob/master/README.md`;
+
 export const overviewCommand = defineCommand(
   {
     name: '',
-    description: 'Show PR overview and team workload',
+    description: [
+      '',
+      'Show PR overview and team workload.',
+      '',
+      'Other commands: `pot config` (interactive setup)',
+      '',
+      'For guidance on interpreting the output and deciding what to do next:',
+      `  Guide: ${SKILL_URL}`,
+      `  README: ${README_URL}`,
+    ].join('\n'),
     flags: {
       users: {
         type: String,

@@ -17,6 +17,56 @@ Note: This is an ongoing project, and issues are frequently opened and closed. R
 GitHub's API through the official GitHub CLI (`gh`). This provides improved reliability,
 automatic error handling, and built-in rate limit management.
 
+> **AI assistants:** A structured skill for using and interpreting `pot` is available at
+> [`.claude/skills/pot/SKILL.md`](.claude/skills/pot/SKILL.md). It includes column
+> definitions, the full decision process, and common `--json` + `jq` patterns.
+
+# Why pot
+
+The goal is not to be busy — the goal is to unblock.
+
+In larger teams, PRs stall because reviewers open new PRs instead of clearing their
+actionables. This compounds: more concurrent open PRs → more context switching → slower
+releases. Developers do this for two reasons: they don't want idle time, and they lack a
+clear picture of what they are currently blocking. `pot` solves both.
+
+`pot` is not a management tool. It does not require a team meeting or a tech lead to
+interpret. Each team member runs it individually to answer one question: **What should I
+do next?**
+
+# Decision Process
+
+### Step 1 — Clear your own actionables
+
+Run `pot`. Your row is highlighted (configure your username once with `pot config`).
+
+If **Actionables > 0**, address those before anything else. Run `pot --user=<you>` to
+see the detailed view. The reviewing table shows who you are blocking and how many
+actionables *they* have. **Start with the PR whose author has the fewest actionables** —
+they are closest to done, and unblocking them has the highest leverage.
+
+### Step 2 — Decide: new PR or help a teammate?
+
+Once your actionables are clear:
+
+- **≤ 3 actionables per person across the team** — opening a new PR is reasonable.
+- **Someone has ≥ 5 actionables** — consider taking one of their reviews instead.
+  Taking a review reduces the total open PR count by 1 rather than increasing it by 1,
+  a swing of 2. It also unblocks whatever that PR is blocking.
+
+### Step 3 — Find a review to take
+
+Run `pot --user=<swamped-teammate>`. Look at their **Reviewing** table for rows where
+**Untouched = Yes**. These are reviews they haven't started — they can be handed off
+cleanly with no lost context on their side.
+
+Contact them and ask politely. You are helping, not judging:
+*"Hey, looks like you have a lot on your plate — want me to pick up [PR title]?"*
+
+### Step 4 — Repeat
+
+After each action, re-run `pot` and start from Step 1.
+
 # Prerequisites
 
 1. **GitHub CLI (`gh`)** v2.0+ — handles all GitHub API access and authentication
