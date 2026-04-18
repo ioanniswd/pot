@@ -5,7 +5,7 @@
 
 A CLI to instantly get an overview of one or more repos' PRs, and decide which PR to act upon next.
 
-![Version badge](https://img.shields.io/badge/version-2.0.0-green.svg)
+![Version badge](https://img.shields.io/badge/version-3.0.0-green.svg)
 
 `pot` stands for Pr Overview Tool
 
@@ -19,34 +19,57 @@ automatic error handling, and built-in rate limit management.
 
 # Prerequisites
 
-Before installing `pot`, ensure you have the following:
+1. **GitHub CLI (`gh`)** v2.0+ — handles all GitHub API access and authentication
+   ```sh
+   # Install: https://cli.github.com
+   gh auth login    # authenticate once
+   gh auth status   # verify
+   ```
 
-1. **GitHub CLI (`gh`)** - The official GitHub command-line tool
-   - Download from: https://cli.github.com
-   - Minimum version: `gh` v2.0+ (to ensure all required JSON field options are available)
-   - After installation, verify it's working:
-     ```sh
-     gh --version
-     ```
-   - Authenticate with:
-     ```sh
-     gh auth login
-     ```
-   - Follow the interactive prompts to complete authentication
-   - Verify authentication with:
-     ```sh
-     gh auth status
-     ```
+2. **Bun** — runtime and package manager
+   ```sh
+   curl -fsSL https://bun.com/install | bash
+   ```
 
-2. **Ruby** - `pot` is a Ruby gem (typically Ruby 2.6+)
+3. **go-task** — task runner (dev/build only, not needed for the standalone binary)
+   ```sh
+   sh -c "$(curl -L https://taskfile.dev/install.sh)" -- -d -b ~/.local/bin
+   ```
 
 # Installation
 
+### Option A — Standalone binary (recommended, no runtime required)
+
+Download the binary for your platform from the [Releases](https://github.com/ioanniswd/pot/releases) page and put it in your PATH:
+
 ```sh
-$ git clone https://github.com/ioanniswd/pot
-$ cd pot
-$ ./install.sh # Installed as a gem
+# Example for Linux x64
+curl -L https://github.com/ioanniswd/pot/releases/latest/download/pot-linux-x64 -o pot
+chmod +x pot
+sudo mv pot /usr/local/bin/pot
 ```
+
+### Option B — From source with `bun link`
+
+```sh
+git clone https://github.com/ioanniswd/pot
+cd pot
+bun install
+task build
+bun link          # makes `pot` available globally
+```
+
+To unlink: `bun unlink pot`
+
+### First-time setup
+
+After installing, configure your repositories:
+
+```sh
+pot config
+```
+
+Follow the interactive prompts to set your GitHub owner (org or user) and repository names.
 
 # Usage
 
@@ -79,7 +102,7 @@ For first-time users, here's the complete setup:
 $ gh auth login
 
 # 3. Configure pot (one-time setup)
-$ pot --config
+$ pot config
 
 # 4. Use pot!
 $ pot --users=john,jane,doe

@@ -1,11 +1,32 @@
-/.bundle/
-/.yardoc
-/Gemfile.lock
-/_yardoc/
-/coverage/
-/doc/
-/pkg/
-/spec/reports/
-/tmp/
-/vendor/
-*.swp
+# OS
+.DS_Store
+
+# Editor
+.vscode/
+.idea/
+
+# Dependencies
+node_modules/
+
+# Build output
+build/
+dist/
+*.tsbuildinfo
+
+# Environment
+.env
+.env.*
+
+# Lefthook
+lefthook-local.yml
+
+# Worktrees
+.worktrees/
+
+# Claude Code
+.claude/settings.local.json
+
+# Notes
+TODO.md
+docs/TODO.md
+docs/plans/
