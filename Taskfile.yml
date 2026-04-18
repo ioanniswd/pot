@@ -1,0 +1,95 @@
+version: "3"
+
+tasks:
+  install:
+    desc: Install dependencies
+    cmd: bun install
+
+  build:
+    desc: Build TypeScript to JavaScript
+    cmds:
+      - bun run build
+
+  clean:
+    desc: Remove build artifacts
+    cmds:
+      - rm -rf build/ dist/
+      - rm -f *.tsbuildinfo
+
+  format:
+    desc: Format all files with Biome (write)
+    cmds:
+      - bunx biome format --write .
+
+  format:check:
+    desc: Check formatting of all files with Biome (no write)
+    cmds:
+      - bunx biome format .
+
+  lint:
+    desc: Lint all files with Biome
+    cmds:
+      - bunx biome lint .
+
+  typecheck:
+    desc: Type-check with TypeScript
+    cmds:
+      - bun run typecheck
+
+  check:
+    desc: Run lint + typecheck
+    deps: [lint, typecheck]
+
+  test:
+    desc: Run unit and integration tests
+    cmds:
+      - bun run test
+
+  test:unit:
+    desc: Run unit tests only
+    cmds:
+      - bun run test:unit
+
+  test:e2e:
+    desc: Run e2e tests (requires gh auth)
+    cmds:
+      - bun run test:e2e
+
+  lint:staged:
+    desc: Run staged-file pre-commit hooks (format + lint) on all files via lefthook
+    cmds:
+      - bunx lefthook run pre-commit --all-files
+
+  compile:
+    desc: Compile standalone binary for current platform
+    cmds:
+      - mkdir -p dist
+      - bun build src/index.ts --compile --outfile dist/pot
+
+  compile:all:
+    desc: Compile release binaries for all platforms
+    cmds:
+      - mkdir -p dist
+      - bun build src/index.ts --compile --target=bun-linux-x64 --outfile dist/pot-linux-x64
+      - bun build src/index.ts --compile --target=bun-linux-arm64 --outfile dist/pot-linux-arm64
+      - bun build src/index.ts --compile --target=bun-darwin-x64 --outfile dist/pot-darwin-x64
+      - bun build src/index.ts --compile --target=bun-darwin-arm64 --outfile dist/pot-darwin-arm64
+      - bun build src/index.ts --compile --target=bun-windows-x64 --outfile dist/pot-windows-x64.exe
+      - bun build src/index.ts --compile --target=bun-windows-arm64 --outfile dist/pot-windows-arm64.exe
+
+  ci:
+    desc: Full CI pipeline locally
+    cmds:
+      - task: clean
+      - task: install
+      - task: format:check
+      - task: check
+      - task: build
+
+  all:
+    desc: Full build pipeline
+    cmds:
+      - task: clean
+      - task: install
+      - task: build
+      - task: check
