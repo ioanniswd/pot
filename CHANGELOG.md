@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.0] - 2026-04-19
+
+### Added
+- "Untouched Reviewers" column in the Authored table (visible with `--user`): lists requested reviewers who have not yet started their review, making it easier to identify who to nudge or ask a teammate to cover
+
 ## [3.0.2] - 2026-04-19
 
 ### Added
