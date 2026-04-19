@@ -1,6 +1,6 @@
 import { createInterface } from 'node:readline';
 import { defineCommand } from 'clerc';
-import { readConfig, writeConfig } from '../../config.js';
+import { readConfig, writeConfig } from '../../services/config.js';
 
 async function prompt(question: string): Promise<string> {
   const rl = createInterface({ input: process.stdin, output: process.stdout });

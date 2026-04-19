@@ -4,36 +4,23 @@
 
 ```text
 tests/
-├── unit/                            # No external dependencies, fast
-│   ├── cli/
-│   │   ├── format.test.ts           # Table and text output formatting
-│   │   └── commands/
-│   │       ├── config.test.ts       # Config command behavior
-│   │       └── overview.test.ts     # Overview command aggregation logic
+├── unit/
 │   └── services/
-│       ├── github.test.ts           # gh CLI wrapper (mocked Bun.spawn)
-│       └── cache.test.ts            # Cache read/write/invalidation
-├── integration/                     # Mocked gh CLI, full command flow
-│   └── overview.test.ts             # End-to-end overview with mock gh output
+│       ├── pr.test.ts               # Pr class review-state logic (mocked Bun.spawn)
+│       └── github.test.ts           # fetchPrs — gh command, parsing, errors
 ├── e2e/                             # Real gh CLI (requires gh auth)
-│   └── cli.test.ts                  # Smoke test against real GitHub
 └── helpers/
-    ├── test-data.ts                 # Factories: makePR(), makePrUser(), makeConfig()
-    └── test-utils.ts                # captureOutput(), mockGh(), restoreGh(), suppressOutput()
-```
-
-## Running Tests
-
-```bash
-task test              # Unit + integration tests
-task test:unit         # Unit tests only
-task test:e2e          # E2E tests (requires gh auth)
+    ├── fixtures/                    # Real gh JSON payloads (9 scenarios)
+    ├── setup.ts                     # Sets POT_CONFIG_PATH=/tmp/pot-test-config.json
+    ├── test-data.ts                 # Factories: makeRawPr(), makeConfig()
+    └── test-utils.ts                # mockGh(), restoreGh()
 ```
 
 ## Helpers
 
-- **test-data.ts** — Factory functions that create valid domain objects with sensible defaults. Use `makePR({ title: 'custom' })` to override specific fields.
-- **test-utils.ts** — `mockGh(responses)` intercepts `Bun.spawn` calls to `gh`. `restoreGh()` cleans up after each test. `captureOutput()` intercepts stdout/stderr for assertions.
+- **test-data.ts** — Factory functions. Use `makeRawPr({ title: 'custom' })` or `makeConfig({ ownerName: 'x' })` to override specific fields.
+- **test-utils.ts** — `mockGh(handler)` intercepts `Bun.spawn` calls to `gh`. `restoreGh()` cleans up after each test.
+- **fixtures/** — Real `gh pr list --json` payloads captured from actual PRs. One file per review-state scenario.
 
 ## Conventions
 

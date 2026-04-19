@@ -1,4 +1,4 @@
-import { readCached, writeCached } from '../config.js';
+import { readCached, writeCached } from './config.js';
 import { ConfigError, GhError } from '../errors.js';
 import { log } from '../logger.js';
 import type { Config, OverviewOptions, RawPr } from '../types.js';

@@ -1,4 +1,4 @@
-import type { AggregatedData } from '../services/aggregator.js';
+import type { AggregatedData } from '../lib/aggregator.js';
 import type { AuthoredPrEntry, ReviewingPrEntry } from '../types.js';
 
 interface PrUserRow {

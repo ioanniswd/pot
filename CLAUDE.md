@@ -48,7 +48,6 @@ bun run src/index.ts --json          # Output raw JSON
 ```text
 src/
 ├── index.ts              # CLI entry point (shebang + run)
-├── config.ts             # Config file management (~/.config/pot/config.json)
 ├── logger.ts             # Logger (stderr, enabled via POT_DEBUG=1)
 ├── types.ts              # Domain types (PR, PrUser, ReviewStatus, etc.)
 ├── errors.ts             # Error type hierarchy
@@ -58,18 +57,23 @@ src/
 │   └── commands/
 │       ├── config.ts     # `pot config` — interactive setup wizard
 │       └── overview.ts   # `pot` (default) — aggregate PR overview table
+├── lib/
+│   ├── pr.ts             # Pr class — review state logic (pure)
+│   └── aggregator.ts     # Aggregates raw PRs into per-user metrics (pure)
 └── services/
     ├── github.ts         # gh CLI wrapper (fetch PRs, reviews, approval status)
-    └── cache.ts          # File-based response cache (~/.config/pot/cache/)
+    └── config.ts         # Config file management (~/.config/pot/config.json)
 tests/
-├── unit/                 # No external dependencies, fast
-│   ├── cli/              # Command output, formatting
-│   └── services/         # github service (mocked gh), cache service
-├── integration/          # Mocked gh CLI, full service layer
+├── unit/
+│   └── services/
+│       ├── pr.test.ts    # Pr class review-state logic
+│       └── github.test.ts # fetchPrs — gh command, parsing, errors
 ├── e2e/                  # Real gh CLI (requires gh auth)
 └── helpers/
-    ├── test-data.ts      # PR/user data factories
-    └── test-utils.ts     # captureOutput(), mockGh(), restoreGh()
+    ├── fixtures/         # Real gh JSON payloads (9 scenarios)
+    ├── setup.ts          # Sets POT_CONFIG_PATH for test isolation
+    ├── test-data.ts      # Factories: makeRawPr(), makeConfig()
+    └── test-utils.ts     # mockGh(), restoreGh()
 ```
 
 ## Prerequisites
@@ -84,3 +88,4 @@ tests/
 - Be concise and direct — let the code speak for itself
 - Do not generate documentation files unless explicitly asked
 - Document current state only, never changes or history
+- When moving a source file to a different directory, check the tree and move its test file to the matching location under `tests/`

@@ -3,7 +3,6 @@
 ## Module Guide
 
 - **index.ts** — CLI entry point (shebang + `run()`)
-- **config.ts** — Config file resolution and persistence (`~/.config/pot/config.json`)
 - **logger.ts** — Debug logger (stderr only, enabled via `POT_DEBUG=1`)
 - **types.ts** — Domain types: `PR`, `PrUser`, `ReviewStatus`, `Config`, `RegisteredPreset`
 - **errors.ts** — Typed error hierarchy (`ConfigError`, `GhError`, `CacheError`)
@@ -16,10 +15,17 @@ Clerc CLI framework:
 - **commands/config.ts** — Interactive setup wizard (owner, repos, cache preference)
 - **commands/overview.ts** — Default command: fetch PR data, aggregate by user, render table
 
+### lib/
+
+Pure logic, no I/O or side effects:
+- **pr.ts** — `Pr` class: review state, actionability, approval counts
+- **aggregator.ts** — Aggregates `RawPr[]` into per-user metrics (`AggregatedData`)
+
 ### services/
 
-- **github.ts** — `gh` CLI wrapper. Shells out to `gh pr list` and `gh pr view` with `--json` flag. All GitHub data flows through here.
-- **cache.ts** — File-based JSON cache at `~/.config/pot/cache/`. Keyed by owner+repos hash. Invalidated manually via `--no-cache` or by TTL.
+External integrations (I/O, network, filesystem):
+- **github.ts** — `gh` CLI wrapper. Shells out to `gh pr list` with `--json` flag. All GitHub data flows through here.
+- **config.ts** — Config file resolution and persistence (`~/.config/pot/config.json`).
 
 ## Key Patterns
 
