@@ -47,12 +47,13 @@ export class Pr {
   get authorActionable(): boolean {
     // Author must act when: a reviewer left CHANGES_REQUESTED and is no longer
     // in requestedReviewers (ball is back in author's court), or nobody has
-    // reviewed and nobody is requested.
+    // pending changes and nobody is requested (e.g. all approved or first open).
     return (
       this.reviewersWithChangesRequested.some(
         (r) => !this.requestedReviewers.includes(r)
       ) ||
-      (this.reviews.length === 0 && this.requestedReviewers.length === 0)
+      (this.reviewersWithChangesRequested.length === 0 &&
+        this.requestedReviewers.length === 0)
     );
   }
 
