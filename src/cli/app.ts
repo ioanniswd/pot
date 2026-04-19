@@ -10,6 +10,8 @@ export async function run(
 ): Promise<void> {
   await checkGhInstalled();
 
+  const normalizedArgv = argv.map((a) => (a === '-v' ? '--version' : a));
+
   await Cli()
     .scriptName('pot')
     .version(packageJson.version)
@@ -25,5 +27,5 @@ export async function run(
     })
     .command(overviewCommand)
     .command(configCommand)
-    .parse(argv.length === 0 ? [] : argv);
+    .parse(normalizedArgv.length === 0 ? [] : normalizedArgv);
 }

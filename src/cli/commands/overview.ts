@@ -25,13 +25,14 @@ export const overviewCommand = defineCommand(
   {
     name: '',
     description: [
+      '[P]R [O]verview [T]ool',
       '',
-      'Show PR overview and team workload.',
+      'Show PR overview and team workload to minimize context switching and speed up releases.',
       '',
-      'Other commands: `pot config` (interactive setup)',
+      'Use `pot config` (interactive setup) to setup.',
       '',
       'For guidance on interpreting the output and deciding what to do next:',
-      `  Guide: ${SKILL_URL}`,
+      `  Guide (CLAUDE Skill): ${SKILL_URL}`,
       `  README: ${README_URL}`,
     ].join('\n'),
     flags: {
