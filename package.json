@@ -1,6 +1,6 @@
 {
   "name": "pot",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "CLI for GitHub PR overview and team workload distribution",
   "type": "module",
   "main": "build/index.js",

@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.1] - 2026-04-19
+
+### Fixed
+- PR overview now correctly marks an author as actionable when all reviewers have approved (previously showed as not actionable after a CHANGES_REQUESTED → APPROVED review sequence)
+
 ## [3.0.0] - 2026-04-18
 
 ### Added
@@ -72,7 +77,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Refactored for readability and easier contributions
 
-[Unreleased]: https://github.com/ioanniswd/pot/compare/v3.0.0...HEAD
+[Unreleased]: https://github.com/ioanniswd/pot/compare/v3.0.1...HEAD
+[3.0.1]: https://github.com/ioanniswd/pot/compare/v3.0.0...v3.0.1
 [3.0.0]: https://github.com/ioanniswd/pot/compare/v2.0.0...v3.0.0
 [2.0.0]: https://github.com/ioanniswd/pot/compare/v1.2.1...v2.0.0
 [1.2.1]: https://github.com/ioanniswd/pot/compare/v1.2.0...v1.2.1
