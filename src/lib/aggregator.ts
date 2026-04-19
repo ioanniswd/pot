@@ -57,6 +57,7 @@ export function aggregate(
         numOfReviewers: pr.numOfReviewers,
         additions: pr.additions,
         deletions: pr.deletions,
+        untouchedReviewers: pr.untouchedRequestedReviewers,
       });
       for (const r of pr.activeReviewers) relevantSet.add(r);
     }

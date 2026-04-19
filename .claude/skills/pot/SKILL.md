@@ -71,15 +71,26 @@ before they open a new PR keeps context switching minimal.
 
 ### Step 2 — Decide: new PR or help a teammate?
 
-- ≤ 3 actionables per person across the team → opening a new PR is fine
-- ≥ 4 actionables for someone → consider taking one of their reviews instead
+- ≤ 3 Total PRs per person across the team → opening a new PR is fine
+- ≥ 4 Total PRs for someone with Untouched > 0 → consider taking one of their reviews instead, if
+  they have any Untouched reviews.
+- ≥ 4 Total PRs for someone but no Actionables → this team member is blocked and
+  will open a new PR. Consider unblocking them by taking on of the reviews that are blocking them.
 
 Taking a review instead of opening a new PR:
   - reduces open PRs by 1 instead of adding 1 (a differential of 2)
   - unblocks whatever that PR is blocking
   - keeps releases moving
 
+Note: Both the number of PRs and their size (lines added/deleted) are signals of
+workload. A large PR can be more work than a small one, but it can also be a
+simple refactor or a doc change. Also, a small PR can be deceptively complex,
+either in general or for a specific reviewer. Always use your judgment when
+evaluating the workload signal.
+
 ### Step 3 — Find a review to take
+
+For a swamped teamate whose Untouched > 0, you can take one of their reviews:
 
     pot --user=<swamped-teammate>
 
@@ -91,6 +102,21 @@ Contact them politely. You are helping, not judging:
 
 Only do this when they are genuinely swamped. If their actionable count is low,
 opening a new PR is the right call.
+
+
+
+For a swamped teammate with no Actionables, you can take one of the reviews that
+are blocking them:
+
+    pot --user=<blocked-teammate>
+
+In the Authored table, look at column "Untouched Reviewers". If there are any,
+the reviews of those teammates haven't been started and can be taken over cleanly,
+effectively unblocking that blocked-teammate.
+
+Contact the untouched reviewer with something like:
+    "Hey, I see that [blocked-teammate] is waiting on a review for [PR title] — want me to pick up that review?
+    I have some idle time."
 
 ### Step 4 — Repeat
 
@@ -110,7 +136,9 @@ releases moving.
 
 Avoid assigning reviews to devs already at the bottom of the table (high Total or
 high Actionables) — they are loaded and adding a review only adds more context
-switching for them and slows releases.
+switching for them and slows releases. Even if a team member has few actionables
+but a high Total, they are bound to be unblocked by someone else soon, so it is
+best to avoid assigning them a review at that moment.
 
 ### This Tool Is For Everyone, Not Just the Lead
 

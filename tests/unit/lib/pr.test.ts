@@ -35,6 +35,10 @@ describe('Pr — requested_review_open_pr', () => {
   it('author is not actionable (waiting for review)', () => {
     expect(pr.authorActionable).toBe(false);
   });
+
+  it('untouchedRequestedReviewers includes reviewer who has not yet reviewed', () => {
+    expect(pr.untouchedRequestedReviewers).toEqual(['ioanniswd-bot']);
+  });
 });
 
 describe('Pr — requested_changes_first_time', () => {
@@ -59,6 +63,10 @@ describe('Pr — requested_changes_first_time', () => {
   it('reviewer is not untouched', () => {
     expect(pr.untouchedBy('ioanniswd-bot')).toBe(false);
   });
+
+  it('untouchedRequestedReviewers is empty (no review requests)', () => {
+    expect(pr.untouchedRequestedReviewers).toEqual([]);
+  });
 });
 
 describe('Pr — re_requesting_review_after_requested_changes', () => {
@@ -79,6 +87,10 @@ describe('Pr — re_requesting_review_after_requested_changes', () => {
   it('author is not actionable (awaiting re-review)', () => {
     expect(pr.authorActionable).toBe(false);
   });
+
+  it('untouchedRequestedReviewers is empty (reviewer has past reviews)', () => {
+    expect(pr.untouchedRequestedReviewers).toEqual([]);
+  });
 });
 
 describe('Pr — re_requesting_changes_after_re_requesting_review', () => {
@@ -98,6 +110,10 @@ describe('Pr — re_requesting_changes_after_re_requesting_review', () => {
 
   it('author is actionable (changes requested again)', () => {
     expect(pr.authorActionable).toBe(true);
+  });
+
+  it('untouchedRequestedReviewers is empty (no review requests)', () => {
+    expect(pr.untouchedRequestedReviewers).toEqual([]);
   });
 });
 
@@ -123,6 +139,10 @@ describe('Pr — approved_after_requested_changes', () => {
   it('has one reviewer', () => {
     expect(pr.numOfReviewers).toBe(1);
   });
+
+  it('untouchedRequestedReviewers is empty (no review requests)', () => {
+    expect(pr.untouchedRequestedReviewers).toEqual([]);
+  });
 });
 
 describe('Pr — re_request_review_after_approval', () => {
@@ -146,6 +166,10 @@ describe('Pr — re_request_review_after_approval', () => {
 
   it('has no approvals', () => {
     expect(pr.numOfApprovals).toBe(0);
+  });
+
+  it('untouchedRequestedReviewers is empty (reviewer has past reviews)', () => {
+    expect(pr.untouchedRequestedReviewers).toEqual([]);
   });
 });
 
@@ -175,6 +199,10 @@ describe('Pr — approval_after_review_request_after_approval', () => {
   it('has one reviewer (same person, multiple reviews)', () => {
     expect(pr.numOfReviewers).toBe(1);
   });
+
+  it('untouchedRequestedReviewers is empty (no review requests)', () => {
+    expect(pr.untouchedRequestedReviewers).toEqual([]);
+  });
 });
 
 describe('Pr — edge cases', () => {
@@ -192,5 +220,6 @@ describe('Pr — edge cases', () => {
     expect(pr.requestedReviewers).toEqual([]);
     expect(pr.activeReviewers).toEqual([]);
     expect(pr.authorActionable).toBe(true);
+    expect(pr.untouchedRequestedReviewers).toEqual([]);
   });
 });
