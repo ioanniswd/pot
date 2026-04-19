@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test';
-import { Pr } from '../../../src/services/pr.js';
+import { Pr } from '../../../src/lib/pr.js';
 import type { RawPr } from '../../../src/types.js';
 import approvalAfterReviewRequestAfterApproval from '../../helpers/fixtures/approval_after_review_request_after_approval.json';
 import approvedAfterRequestedChanges from '../../helpers/fixtures/approved_after_requested_changes.json';

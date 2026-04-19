@@ -1,7 +1,11 @@
 import { defineCommand } from 'clerc';
 import packageJson from '../../../package.json' with { type: 'json' };
-import { readConfig, requireConfig, savePreset } from '../../config.js';
-import { aggregate } from '../../services/aggregator.js';
+import {
+  readConfig,
+  requireConfig,
+  savePreset,
+} from '../../services/config.js';
+import { aggregate } from '../../lib/aggregator.js';
 import { checkGhAuth, fetchPrs } from '../../services/github.js';
 import type { OverviewOptions } from '../../types.js';
 import {

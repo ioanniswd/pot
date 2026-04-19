@@ -1,8 +1,8 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { homedir } from 'node:os';
 import { dirname, join } from 'node:path';
-import { ConfigError } from './errors.js';
-import type { Config, RegisteredPreset } from './types.js';
+import { ConfigError } from '../errors.js';
+import type { Config, RegisteredPreset } from '../types.js';
 
 const CONFIG_PATH =
   process.env.POT_CONFIG_PATH ??
