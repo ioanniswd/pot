@@ -11,8 +11,6 @@ Keep releases fast, idle time zero, and context switching minimal.
 
 In larger teams, PRs stall because reviewers open new PRs instead of unblocking others. This compounds: more concurrent open PRs → more context switching → slower releases. Developers do this for two reasons: they don't want idle time, and they lack a clear picture of what they are blocking. `pot` solves the latter.
 
-**The goal is not to be busy. The goal is to unblock.**
-
 ## How to Interpret the Output
 
 ```
