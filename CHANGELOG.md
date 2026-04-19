@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.2] - 2026-04-19
+
+### Added
+- `-v` as a short alias for `--version`
+
+### Changed
+- Updated help text description
+
 ## [3.0.1] - 2026-04-19
 
 ### Fixed
@@ -77,7 +85,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Refactored for readability and easier contributions
 
-[Unreleased]: https://github.com/ioanniswd/pot/compare/v3.0.1...HEAD
+[Unreleased]: https://github.com/ioanniswd/pot/compare/v3.0.2...HEAD
+[3.0.2]: https://github.com/ioanniswd/pot/compare/v3.0.1...v3.0.2
 [3.0.1]: https://github.com/ioanniswd/pot/compare/v3.0.0...v3.0.1
 [3.0.0]: https://github.com/ioanniswd/pot/compare/v2.0.0...v3.0.0
 [2.0.0]: https://github.com/ioanniswd/pot/compare/v1.2.1...v2.0.0
