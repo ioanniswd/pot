@@ -62,7 +62,6 @@ src/
 │   └── aggregator.ts     # Aggregates raw PRs into per-user metrics (pure)
 └── services/
     ├── github.ts         # gh CLI wrapper (fetch PRs, reviews, approval status)
-    ├── cache.ts          # File-based response cache (~/.config/pot/cache/)
     └── config.ts         # Config file management (~/.config/pot/config.json)
 tests/
 ├── unit/

@@ -25,7 +25,6 @@ Pure logic, no I/O or side effects:
 
 External integrations (I/O, network, filesystem):
 - **github.ts** — `gh` CLI wrapper. Shells out to `gh pr list` with `--json` flag. All GitHub data flows through here.
-- **cache.ts** — File-based JSON cache at `~/.config/pot/cache/`. Keyed by owner+repos hash.
 - **config.ts** — Config file resolution and persistence (`~/.config/pot/config.json`).
 
 ## Key Patterns
