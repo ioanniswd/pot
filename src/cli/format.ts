@@ -74,12 +74,19 @@ export function formatAuthoredTable(prs: AuthoredPrEntry[]): string {
   const sorted = [...prs].sort(
     (a, b) => (a.actionable ? 0 : 1) - (b.actionable ? 0 : 1)
   );
-  const headers = ['Actionable', 'Approvals', '+/-', 'PR'];
+  const headers = [
+    'Actionable',
+    'Approvals',
+    '+/-',
+    'PR',
+    'Untouched Reviewers',
+  ];
   const rows = sorted.map((p) => [
     p.actionable ? 'Yes' : 'No',
     `${p.numOfApprovals} / ${p.numOfReviewers}`,
     `${p.additions} / ${p.deletions}`,
     `${p.title} (${p.url})`,
+    p.untouchedReviewers.length > 0 ? p.untouchedReviewers.join(', ') : '-',
   ]);
   return `Authored\n${renderTable(headers, rows)}`;
 }

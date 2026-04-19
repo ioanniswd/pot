@@ -65,6 +65,7 @@ export interface AuthoredPrEntry {
   numOfReviewers: number;
   additions: number;
   deletions: number;
+  untouchedReviewers: string[];
 }
 
 export interface ReviewingPrEntry {

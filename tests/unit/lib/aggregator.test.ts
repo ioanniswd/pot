@@ -110,6 +110,62 @@ describe('aggregate — specifiedUserPrs', () => {
     expect(specifiedUserPrs.authored[0].title).toBe('My PR');
   });
 
+  it('includes untouchedReviewers for authored PRs with untouched requested reviewers', () => {
+    const prs = [
+      makeRawPr({
+        author: { login: 'alice' },
+        reviewRequests: [{ login: 'bob' }, { login: 'charlie' }],
+        reviews: [
+          {
+            author: { login: 'bob' },
+            state: 'COMMENTED',
+            submittedAt: '2025-01-01T00:00:00Z',
+          },
+        ],
+      }),
+    ];
+
+    const { specifiedUserPrs } = aggregate(prs, 'alice', false);
+
+    expect(specifiedUserPrs.authored[0].untouchedReviewers).toEqual([
+      'charlie',
+    ]);
+  });
+
+  it('returns empty untouchedReviewers when all requested reviewers have reviewed', () => {
+    const prs = [
+      makeRawPr({
+        author: { login: 'alice' },
+        reviewRequests: [{ login: 'bob' }],
+        reviews: [
+          {
+            author: { login: 'bob' },
+            state: 'APPROVED',
+            submittedAt: '2025-01-01T00:00:00Z',
+          },
+        ],
+      }),
+    ];
+
+    const { specifiedUserPrs } = aggregate(prs, 'alice', false);
+
+    expect(specifiedUserPrs.authored[0].untouchedReviewers).toEqual([]);
+  });
+
+  it('returns empty untouchedReviewers when no reviewers are requested', () => {
+    const prs = [
+      makeRawPr({
+        author: { login: 'alice' },
+        reviewRequests: [],
+        reviews: [],
+      }),
+    ];
+
+    const { specifiedUserPrs } = aggregate(prs, 'alice', false);
+
+    expect(specifiedUserPrs.authored[0].untouchedReviewers).toEqual([]);
+  });
+
   it('populates reviewing entries for specified user', () => {
     const prs = [
       makeRawPr({

@@ -65,6 +65,10 @@ export class Pr {
     return !this.allPastReviewers.includes(user);
   }
 
+  get untouchedRequestedReviewers(): string[] {
+    return this.requestedReviewers.filter((r) => this.untouchedBy(r));
+  }
+
   get numOfApprovals(): number {
     return this.approvedReviewers.length;
   }
