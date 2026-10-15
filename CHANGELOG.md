@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.1] - 2026-10-15
+
+### Fixed
+- `--registered=<name>` restores the saved options correctly. Before this release, the flags that you did not set replaced every value in the preset, and the preset had no effect
+- `--register-new=<name>` writes only the options that you set. Before this release, it also wrote `"urlOnly": false` into the preset
+
 ## [3.1.0] - 2026-04-19
 
 ### Added
