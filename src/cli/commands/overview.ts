@@ -7,7 +7,7 @@ import {
 } from '../../services/config.js';
 import { aggregate } from '../../lib/aggregator.js';
 import { checkGhAuth, fetchPrs } from '../../services/github.js';
-import type { OverviewOptions } from '../../types.js';
+import type { OverviewOptions, RegisteredPreset } from '../../types.js';
 import {
   formatAuthoredTable,
   formatOverviewTable,
@@ -70,10 +70,13 @@ export const overviewCommand = defineCommand(
     },
   },
   async (ctx) => {
+    // The boolean flags end in `|| undefined` because clerc gives false when
+    // the user does not pass the flag. A false value replaces the values that
+    // come from a preset.
     let options: OverviewOptions = {
       users: ctx.flags.users,
       user: ctx.flags.user,
-      urlOnly: ctx.flags['url-only'],
+      urlOnly: ctx.flags['url-only'] || undefined,
       actionable:
         ctx.flags.actionable === 'true'
           ? true
@@ -84,8 +87,8 @@ export const overviewCommand = defineCommand(
       repositoryNames: ctx.flags['repository-names'],
       registerNew: ctx.flags['register-new'],
       registered: ctx.flags.registered,
-      cached: ctx.flags.cached,
-      json: ctx.flags.json,
+      cached: ctx.flags.cached || undefined,
+      json: ctx.flags.json || undefined,
     };
 
     // Restore saved preset (flags take precedence over preset values)
@@ -98,7 +101,7 @@ export const overviewCommand = defineCommand(
         );
         process.exit(1);
       }
-      options = { ...preset, ...options, registered: undefined };
+      options = applyPreset(preset, options);
     }
 
     // Save current options as a preset
@@ -203,3 +206,22 @@ export const overviewCommand = defineCommand(
     }
   }
 );
+
+/**
+ * Apply a saved preset to the current options.
+ *
+ * The flags that the user gives replace the values from the preset. The flags
+ * that the user does not give have the value `undefined`. This function
+ * removes them first. If they stay, they replace the preset values with
+ * `undefined` and the preset has no effect.
+ */
+export function applyPreset(
+  preset: RegisteredPreset,
+  options: OverviewOptions
+): OverviewOptions {
+  const givenFlags = Object.fromEntries(
+    Object.entries(options).filter(([, value]) => value !== undefined)
+  ) as OverviewOptions;
+
+  return { ...preset, ...givenFlags, registered: undefined };
+}
