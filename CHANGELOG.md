@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.2.0] - 2026-11-19
+
+### Changed
+- The PR column of the Authored and Reviewing tables shows the PR title as a link. Click the title to open the PR. The URL does not show, so the tables are narrower. The terminal must support OSC 8 hyperlinks
+- When the output goes to a pipe or a file, the PR column shows the title and the URL, as before
+
 ## [3.1.1] - 2026-10-15
 
 ### Fixed

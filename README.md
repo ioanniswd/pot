@@ -241,6 +241,16 @@ The ratio of users who have approved the PR, to all users ever involved in the P
 #### +/-
 Additions / Deletions in lines of code
 
+#### PR
+In a terminal, the PR title is a link. Ctrl+click the title (Cmd+click on
+macOS) to open the PR. The terminal must support OSC 8 hyperlinks, for example
+GNOME Terminal, Konsole, kitty, WezTerm, Alacritty, Ghostty or iTerm2. The
+macOS Terminal app does not show the link. In tmux 3.4 or later, add
+`set -as terminal-features ",*:hyperlinks"` to the tmux configuration.
+
+When the output goes to a pipe or a file, the PR column shows the title and the
+URL, as in the example above.
+
 ## List all of user's PR urls
 
 This is used to conveniently open all of a users PRs in the browser

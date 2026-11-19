@@ -70,7 +70,10 @@ export function formatOverviewTable(
   return renderTable(headers, tableRows);
 }
 
-export function formatAuthoredTable(prs: AuthoredPrEntry[]): string {
+export function formatAuthoredTable(
+  prs: AuthoredPrEntry[],
+  hyperlinks: boolean
+): string {
   const sorted = [...prs].sort(
     (a, b) => (a.actionable ? 0 : 1) - (b.actionable ? 0 : 1)
   );
@@ -85,7 +88,7 @@ export function formatAuthoredTable(prs: AuthoredPrEntry[]): string {
     p.actionable ? 'Yes' : 'No',
     `${p.numOfApprovals} / ${p.numOfReviewers}`,
     `${p.additions} / ${p.deletions}`,
-    `${p.title} (${p.url})`,
+    formatPrCell(p, hyperlinks),
     p.untouchedReviewers.length > 0 ? p.untouchedReviewers.join(', ') : '-',
   ]);
   return `Authored\n${renderTable(headers, rows)}`;
@@ -93,7 +96,8 @@ export function formatAuthoredTable(prs: AuthoredPrEntry[]): string {
 
 export function formatReviewingTable(
   prs: ReviewingPrEntry[],
-  actionablesCountPerAuthor: Map<string, number>
+  actionablesCountPerAuthor: Map<string, number>,
+  hyperlinks: boolean
 ): string {
   const sorted = [...prs].sort((a, b) => {
     const aScore = a.actionable ? 0 : 1;
@@ -117,20 +121,45 @@ export function formatReviewingTable(
     `${p.author}: ${actionablesCountPerAuthor.get(p.author) ?? 0}`,
     `${p.numOfApprovals} / ${p.numOfReviewers}`,
     `${p.additions} / ${p.deletions}`,
-    `${p.title} (${p.url})`,
+    formatPrCell(p, hyperlinks),
   ]);
   return `Reviewing\n${renderTable(headers, rows)}`;
+}
+
+/**
+ * Wrap the text in an OSC 8 escape sequence. A terminal that supports OSC 8
+ * shows only the text and opens the URL when the user clicks the text.
+ */
+export function hyperlink(text: string, url: string): string {
+  return `\x1b]8;;${url}\x1b\\${text}\x1b]8;;\x1b\\`;
+}
+
+function formatPrCell(
+  pr: { title: string; url: string },
+  hyperlinks: boolean
+): string {
+  return hyperlinks ? hyperlink(pr.title, pr.url) : `${pr.title} (${pr.url})`;
+}
+
+// biome-ignore lint/suspicious/noControlCharactersInRegex: OSC 8 starts with ESC
+const OSC8_PATTERN = /\x1b\]8;;[^\x1b]*\x1b\\/g;
+
+/** Width of the text as the terminal shows it, without OSC 8 sequences. */
+export function visibleWidth(text: string): number {
+  return text.replace(OSC8_PATTERN, '').length;
 }
 
 function renderTable(headers: string[], rows: string[][]): string {
   const allRows = [headers, ...rows];
   const widths = headers.map((_, i) =>
-    Math.max(...allRows.map((r) => (r[i] ?? '').length))
+    Math.max(...allRows.map((r) => visibleWidth(r[i] ?? '')))
   );
 
   const sep = `+${widths.map((w) => '-'.repeat(w + 2)).join('+')}+`;
+  const pad = (cell: string, width: number) =>
+    cell + ' '.repeat(width - visibleWidth(cell));
   const fmt = (row: string[]) =>
-    `| ${row.map((cell, i) => cell.padEnd(widths[i])).join(' | ')} |`;
+    `| ${row.map((cell, i) => pad(cell, widths[i])).join(' | ')} |`;
 
   return [sep, fmt(headers), sep, ...rows.map(fmt), sep].join('\n');
 }
