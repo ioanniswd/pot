@@ -192,15 +192,18 @@ export const overviewCommand = defineCommand(
     );
 
     if (specifiedUser) {
+      // Links only in a terminal. Piped output keeps the full URL.
+      const hyperlinks = process.stdout.isTTY === true;
       process.stdout.write('\n');
       process.stdout.write(
-        `${formatAuthoredTable(data.specifiedUserPrs.authored)}\n`
+        `${formatAuthoredTable(data.specifiedUserPrs.authored, hyperlinks)}\n`
       );
       process.stdout.write('\n');
       process.stdout.write(
         `${formatReviewingTable(
           data.specifiedUserPrs.reviewing,
-          data.actionablesCountPerAuthor
+          data.actionablesCountPerAuthor,
+          hyperlinks
         )}\n`
       );
     }
