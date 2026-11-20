@@ -4,7 +4,7 @@ import { log } from '../logger.js';
 import type { Config, OverviewOptions, RawPr } from '../types.js';
 
 const GH_FIELDS =
-  'number,title,url,author,additions,deletions,reviews,reviewRequests';
+  'number,title,url,author,additions,deletions,isDraft,reviews,reviewRequests';
 
 export async function checkGhInstalled(): Promise<void> {
   const proc = Bun.spawn(['gh', '--version'], {
@@ -57,6 +57,17 @@ export async function fetchPrs(
     );
   }
 
+  const prs = await fetchOrReadCached(ownerName, repoNames, config, options);
+  return config.ignoreDrafts ? prs.filter((pr) => !pr.isDraft) : prs;
+}
+
+/** The cache keeps all PRs, drafts too, so `ignoreDrafts` applies after it. */
+async function fetchOrReadCached(
+  ownerName: string,
+  repoNames: string[],
+  config: Config,
+  options: OverviewOptions
+): Promise<RawPr[]> {
   const cacheKey = [...repoNames].sort().join(',');
 
   if (options.cached) {

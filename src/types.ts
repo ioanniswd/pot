@@ -15,6 +15,7 @@ export interface RawPr {
   author: { login: string };
   additions: number;
   deletions: number;
+  isDraft: boolean;
   reviews: RawReview[];
   reviewRequests: RawReviewRequest[];
 }
@@ -23,6 +24,7 @@ export interface Config {
   ownerName: string;
   repositoryNames: string[];
   cacheEnabled: boolean;
+  ignoreDrafts?: boolean;
   user?: string;
   registered: Record<string, RegisteredPreset>;
 }

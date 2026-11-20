@@ -15,7 +15,8 @@ async function prompt(question: string): Promise<string> {
 export const configCommand = defineCommand(
   {
     name: 'config',
-    description: 'Interactive setup: configure owner, repositories, and cache',
+    description:
+      'Interactive setup: configure owner, repositories, cache, and draft PRs',
     flags: {},
   },
   async () => {
@@ -28,6 +29,7 @@ export const configCommand = defineCommand(
       `Repository names (comma-separated)${existing?.repositoryNames?.length ? ` [${existing.repositoryNames.join(',')}]` : ''}: `
     );
     const cacheAnswer = await prompt('Enable caching (y/n) [n]: ');
+    const ignoreDraftsAnswer = await prompt('Ignore draft PRs (y/n) [n]: ');
     const user = await prompt(
       `Your GitHub username (for highlighting)${existing?.user ? ` [${existing.user}]` : ''}: `
     );
@@ -41,6 +43,7 @@ export const configCommand = defineCommand(
             .filter(Boolean)
         : (existing?.repositoryNames ?? []),
       cacheEnabled: cacheAnswer.toLowerCase().startsWith('y'),
+      ignoreDrafts: ignoreDraftsAnswer.toLowerCase().startsWith('y'),
       user: user || existing?.user,
       registered: existing?.registered ?? {},
     };

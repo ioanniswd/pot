@@ -35,7 +35,7 @@ gh auth login                        # Authenticate with GitHub (required before
 gh auth status                       # Verify authentication
 
 # Run (dev, without compiling)
-bun run src/index.ts config          # Interactive setup (owner, repos, cache)
+bun run src/index.ts config          # Interactive setup (owner, repos, cache, drafts)
 bun run src/index.ts                 # Show PR overview table
 bun run src/index.ts --user=john     # Show user-specific PR breakdown
 bun run src/index.ts --users=a,b     # Filter table to specific users
