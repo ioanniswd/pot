@@ -302,8 +302,23 @@ Follow the interactive wizard to define:
 - **Repository names** (comma-separated): Which repositories to analyze
 - **Owner name**: GitHub user or organization that owns the repositories
 - **Cache enabled**: Whether to cache PR data for faster subsequent runs
+- **Ignore draft PRs**: Whether to remove draft PRs from all output
 
 The configuration is saved to `~/.pot/config` for future use.
+
+### Draft PRs
+
+The `ignoreDrafts` value in the configuration file controls draft PRs. The
+default value is `false`. If `ignoreDrafts` is `true`, pot does not show draft
+PRs. The overview table, the detailed tables, `--url-only` and `--json` do not
+count or show them.
+
+To change the value, run `pot config` and answer the "Ignore draft PRs"
+question.
+
+The cache keeps draft PRs. Thus, a change to `ignoreDrafts` applies also to
+data from `--cached`. If the cache is from pot 3.2.0 or earlier, it does not
+contain the draft status. In that case, run pot one time without `--cached`.
 
 # Register
 In case a command is usually being used with certain options, options can be saved

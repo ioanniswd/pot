@@ -8,6 +8,7 @@ export function makeRawPr(overrides: Partial<RawPr> = {}): RawPr {
     author: { login: 'alice' },
     additions: 10,
     deletions: 5,
+    isDraft: false,
     reviews: [],
     reviewRequests: [],
     ...overrides,

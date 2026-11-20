@@ -155,6 +155,7 @@ the intended use case.
 3. Use `--user=name` to drill into a specific person's authored and reviewing PRs
 4. Use `--cached` only when fresh data isn't needed — default always fetches live
 5. When advising on what to do next, follow the decision process from `pot guide`
+6. If `ignoreDrafts` is `true` in `~/.config/pot/config.json`, pot does not show draft PRs. A draft PR is then not in the counts or the tables
 
 ## Output
 
@@ -192,7 +193,7 @@ pot --cached
 ## Setup
 
 ```bash
-# First-time setup (sets owner, repos, cache preference, and your GitHub username)
+# First-time setup (sets owner, repos, cache preference, draft PRs, and your GitHub username)
 pot config
 
 # Save a preset for quick reuse
