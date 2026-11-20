@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.3.0] - 2026-11-20
+
+### Added
+- `ignoreDrafts` in the configuration file. If the value is `true`, pot does not show draft PRs. The overview table, the detailed tables, `--url-only` and `--json` do not count or show them. The default value is `false`
+- `pot config` asks the "Ignore draft PRs" question to set `ignoreDrafts`
+
 ## [3.2.0] - 2026-11-19
 
 ### Changed
